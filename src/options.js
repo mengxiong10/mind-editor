@@ -10,7 +10,7 @@ const activeColor = '#1890ff';
 export const nodeOptions = {
   activeColor,
   nodeBox: {
-    padding: 8
+    padding: [5, 12, 5, 12]
   },
   edgeStyle: {
     stroke: '#a3b1bf'
@@ -28,7 +28,7 @@ export const nodeOptions = {
     fontFamily: 'sans-serif',
     textAlign: 'left',
     textBaseline: 'top',
-    lineHeight: 18,
+    lineHeight: 12 * 1.5,
     fill: '#666'
   },
   activedTextStyle: {

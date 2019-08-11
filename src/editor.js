@@ -2,13 +2,11 @@
 import G6 from '@antv/g6/src/index';
 import Hierarchy from '@antv/hierarchy';
 import { nodeOptions } from './options';
-import { guid } from './utils/base';
 import registerExpandNode from './nodes/expandNode';
 import mxContextmenu from './behavior/mx-contextmenu';
 import mxClickSelect from './behavior/mx-click-select';
 import mxEdit from './behavior/mx-edit';
-import { sliceText } from './utils/drawText';
-import { getNewNode } from './treeNode';
+import { getNewNode, getLabelObj } from './treeNode';
 
 registerExpandNode(G6, nodeOptions);
 
@@ -20,13 +18,7 @@ const initialData = {
   label: '我是根\n节点\n55555',
   children: [
     {
-      label: '测1'
-    },
-    {
-      label: '测试你说的房间爱上'
-    },
-    {
-      label: '测试你说的房间爱上'
+      label: '测1\n测试'
     }
   ]
 };
@@ -128,18 +120,17 @@ export class Editor extends G6.TreeGraph {
   updateCurrentLabel(label) {
     if (this.currentId) {
       const current = this.findById(this.currentId);
-      if (current && current.getModel().label !== label) {
-        const currentModel = current.getModel();
-        const newNode = getNewNode({ label });
-        if (currentModel.children) {
-          newNode.children = currentModel.children;
-        }
+      const currentModel = current.getModel();
+      if (current && currentModel.label !== label) {
+        const newNode = { ...currentModel, ...getLabelObj(label) };
         if (currentModel.parent) {
           const parentModel = this.findDataById(currentModel.parent);
           const index = parentModel.children.findIndex(
             v => v.id === this.currentId
           );
           parentModel.children.splice(index, 1, newNode);
+        } else {
+          this.data(newNode);
         }
         this.set('animate', false);
         this.changeData();

@@ -1,22 +1,20 @@
 export default function registerExpandNode(G6, nodeOptions) {
   G6.registerNode('expand-node', {
     draw(cfg, group) {
-      const paddingValue = nodeOptions.nodeBox.padding;
-      const { collapsed, children, label = '' } = cfg;
+      const padding = nodeOptions.nodeBox.padding;
+      const paddingTop = padding[0];
+      const paddingLeft = padding[3];
+      const { collapsed, children, width, height, text } = cfg;
       const { textStyle, nodeStyle } = nodeOptions;
-      const text = label.trim() || '空';
       const attrs = {
-        x: paddingValue,
-        y: paddingValue,
+        x: paddingLeft,
+        y: paddingTop + textStyle.lineHeight - textStyle.fontSize,
         text,
         ...textStyle
       };
       const labelObj = group.addShape('text', {
         attrs
       });
-      const labelBox = labelObj.getBBox();
-      const width = labelBox.maxX + paddingValue;
-      const height = Math.ceil(labelBox.maxY + paddingValue);
       group.addShape('rect', {
         attrs: {
           width,

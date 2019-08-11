@@ -70,7 +70,7 @@ function ContextMenu(props: ContextMenuProps) {
       }}
     >
       <TextArea
-        style={{ fontSize: '12px' }}
+        style={{ fontSize: '12px', lineHeight: 1.5, overflow: 'hidden' }}
         ref={textareaRef}
         autosize
         value={innerValue}

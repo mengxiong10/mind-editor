@@ -25,14 +25,14 @@ export function sliceText({ text, maxWidth = 240, font = '12px sans-serif' }) {
     return [];
   }
   context.font = font;
-  return text.split('\n').reduce((acc, prev) => {
+  return text.split('\n').reduce((acc, cur) => {
     const lines = [];
-    let str = prev;
-    while (str.length) {
+    let str = cur;
+    do {
       const obj = getSliceLength(str, maxWidth, context);
       lines.push(obj);
       str = str.slice(obj.text.length);
-    }
+    } while (str.length);
     return acc.concat(lines);
   }, []);
 }
