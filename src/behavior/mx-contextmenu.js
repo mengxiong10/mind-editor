@@ -21,6 +21,8 @@ export default {
     graph.setItemState(item, 'selected', true);
     graph.emit('mx-node-contextmenu', {
       target: item,
+      canvasX: e.canvasX,
+      canvasY: e.canvasY,
       clientX: e.clientX,
       clientY: e.clientY
     });

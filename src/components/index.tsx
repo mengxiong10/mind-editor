@@ -1,8 +1,8 @@
 /* eslint-disable import/no-unresolved */
 import React, { useRef, useEffect, useState } from 'react';
 import 'antd/dist/antd.css';
-import ContextMenu from './ContextMenu';
-import InputOverlay from './InputOverlay';
+import OverlayInput from './OverlayInput';
+import OverlayMenu from './OverlayMenu';
 import { Editor } from '../editor';
 
 interface TreeEditorProps {}
@@ -10,6 +10,7 @@ interface TreeEditorProps {}
 function TreeEditor(props: TreeEditorProps) {
   const editorContainerRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<any>(null);
+  const tempRef = useRef<any>({});
   const [contextMenuVisible, setContextMenuVisible] = useState(false);
   const [contextMenuPosition, setContextMenuPosition] = useState({
     top: 0,
@@ -28,58 +29,66 @@ function TreeEditor(props: TreeEditorProps) {
     setContextMenuVisible(false);
   };
 
+  const handleDeleteNode = () => {
+    editorRef.current.deleteNode();
+    setContextMenuVisible(false);
+  };
+
+  const contextMenuItems = [
+    { name: '新增条件', key: 'addNode', onClick: handleAddNode },
+    { name: '删除节点', key: 'deleteNode', onClick: handleDeleteNode }
+  ];
+
   const hideInput = () => {
     setInputVisible(false);
   };
 
   const handleInputConfirm = (val: string) => {
-    editorRef.current.updateCurrentLabel(val);
+    editorRef.current.updateNodeText(tempRef.current.inputKey, val);
     hideInput();
   };
 
   useEffect(() => {
     editorRef.current = new Editor({ container: editorContainerRef.current });
-    editorRef.current.on('mx-node-contextmenu', (ev: any) => {
-      const { clientX, clientY } = ev;
+    editorRef.current.on('mx-node-contextmenu', (evt: any) => {
       setContextMenuVisible(true);
-      setContextMenuPosition({ top: clientY, left: clientX });
+      setContextMenuPosition({ top: evt.canvasY, left: evt.canvasX });
     });
     editorRef.current.on('mousedown', () => {
       setContextMenuVisible(false);
     });
-    editorRef.current.on('mx-node-edit', (evt: any) => {
-      const { graph, item } = evt;
-      const box = item.getBBox();
-      const model = item.getModel();
-      const { x, y } = graph.getClientByPoint(box.x, box.y);
+    editorRef.current.on('mx-text-edit', (evt: any) => {
+      const { width, x, y, value, key } = evt;
+      tempRef.current.inputKey = key;
       setInputVisible(true);
-      setInputValue(model.label);
-      setInputPosition({ left: x, top: y, width: box.width });
+      setInputValue(value);
+      setInputPosition({ left: x, top: y, width });
     });
   }, []);
 
   return (
     <div
+      ref={editorContainerRef}
       style={{
+        position: 'relative',
         height: '100%',
         width: '500px',
         margin: '200px auto 30px',
         border: '1px solid skyblue'
       }}
     >
-      <ContextMenu
-        {...contextMenuPosition}
+      <OverlayMenu
+        style={contextMenuPosition}
         visible={contextMenuVisible}
-        onAddNode={handleAddNode}
+        items={contextMenuItems}
       />
-      <InputOverlay
-        {...inputPosition}
+      <OverlayInput
+        style={inputPosition}
         visible={inputVisible}
         value={inputValue}
         onConfirm={handleInputConfirm}
         onCancel={hideInput}
       />
-      <div style={{ height: '100%' }} ref={editorContainerRef} />
     </div>
   );
 }

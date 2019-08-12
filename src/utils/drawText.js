@@ -36,3 +36,16 @@ export function sliceText({ text, maxWidth = 240, font = '12px sans-serif' }) {
     return acc.concat(lines);
   }, []);
 }
+
+export function getTextBox({
+  text,
+  maxWidth = 240,
+  font = '12px sans-serif',
+  lineHeight = 18
+}) {
+  const result = sliceText({ text, maxWidth, font });
+  const width = Math.max(...result.map(v => v.width));
+  const height = result.length * lineHeight;
+  const value = result.map(v => v.text).join('\n');
+  return { width, height, value };
+}

@@ -1,47 +1,35 @@
-import React, {
-  useState,
-  ChangeEvent,
-  KeyboardEvent,
-  useRef,
-  useEffect
-} from 'react';
-import ReactDOM from 'react-dom';
+import React, { useState, KeyboardEvent, useRef, useEffect } from 'react';
 import TextArea from 'antd/es/input/TextArea';
+import Overlay from './Overlay';
 
-interface ContextMenuProps {
+interface OverlayInputProps {
   visible: boolean;
-  left: number;
-  top: number;
-  width: number;
+  style: React.CSSProperties;
   value: string;
   onConfirm: (val: string) => void;
   onCancel: () => void;
 }
 
-function ContextMenu(props: ContextMenuProps) {
-  const { visible, left, top, width, value } = props;
+function OverlayInput(props: OverlayInputProps) {
+  const { visible, style, value } = props;
   const textareaRef = useRef<TextArea>(null);
   const cancelledRef = useRef<boolean>(false);
   const [innerValue, setInnerValue] = useState(value);
-  const style = {
-    display: visible ? 'block' : 'none',
-    top,
-    left,
-    width
-  };
-
-  const handleConfirm = (evt: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (evt.shiftKey || evt.ctrlKey) {
-      evt.preventDefault();
-      textareaRef.current!.blur();
-    }
-  };
 
   const handleKeyDown = (evt: KeyboardEvent<HTMLTextAreaElement>) => {
+    // Esc
     if (evt.keyCode === 27) {
       setInnerValue(value);
       cancelledRef.current = true;
       props.onCancel();
+    } else if (evt.keyCode === 13) {
+      if (evt.ctrlKey) {
+        setInnerValue(v => `${v}\n`);
+      }
+      if (!evt.ctrlKey && !evt.shiftKey) {
+        evt.preventDefault();
+        textareaRef.current!.blur();
+      }
     }
   };
 
@@ -53,35 +41,34 @@ function ContextMenu(props: ContextMenuProps) {
   };
 
   useEffect(() => {
-    setInnerValue(value);
-  }, [value]);
-
-  useEffect(() => {
     if (visible) {
       textareaRef.current!.focus();
     }
   }, [visible]);
 
+  useEffect(() => {
+    setInnerValue(value);
+  }, [value]);
+
   const content = (
-    <div
-      style={{
-        position: 'fixed',
-        ...style
-      }}
-    >
+    <Overlay style={style} visible={visible}>
       <TextArea
-        style={{ fontSize: '12px', lineHeight: 1.5, overflow: 'hidden' }}
+        style={{
+          fontSize: '12px',
+          lineHeight: 1.5,
+          overflow: 'hidden'
+        }}
         ref={textareaRef}
         autosize
         value={innerValue}
         onChange={evt => setInnerValue(evt.currentTarget.value)}
         onKeyDown={handleKeyDown}
-        onPressEnter={handleConfirm}
         onBlur={handleBlur}
       />
-    </div>
+    </Overlay>
   );
-  return ReactDOM.createPortal(content, document.body);
+  return content;
+  // return ReactDOM.createPortal(content, document.body);
 }
 
-export default ContextMenu;
+export default OverlayInput;

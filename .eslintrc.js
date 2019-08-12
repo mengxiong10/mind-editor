@@ -23,6 +23,7 @@ module.exports = {
     'prettier/react'
   ],
   rules: {
+    'no-underscore-dangle': 0,
     // 对象声明都必须用解构: 关闭
     'prefer-destructuring': 0,
     // 禁止for of: 关闭
@@ -57,6 +58,7 @@ module.exports = {
 
     // 必须是package.json里面的包: 关闭
     'import/no-extraneous-dependencies': 0,
-    'import/prefer-default-export': 0
+    'import/prefer-default-export': 0,
+    'import/no-unresolved': 0
   }
 };

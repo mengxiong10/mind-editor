@@ -1,27 +1,20 @@
-export const defaultOptions = {
-  animate: false,
-  hGap: 20,
-  vGap: 10,
-  disabled: false
-};
-
 const activeColor = '#1890ff';
 
 export const nodeOptions = {
   activeColor,
-  nodeBox: {
-    padding: [5, 12, 5, 12]
-  },
   edgeStyle: {
     stroke: '#a3b1bf'
+  },
+  nodeBox: {
+    // node padding 也是 input 的 padding
+    padding: [5, 12, 5, 12]
   },
   nodeStyle: {
     stroke: '#a3b1bf',
     fill: '#fff'
   },
   activedNodeStyle: {
-    stroke: '#fff',
-    fill: activeColor
+    stroke: activeColor
   },
   textStyle: {
     fontSize: 12,
@@ -32,7 +25,13 @@ export const nodeOptions = {
     fill: '#666'
   },
   activedTextStyle: {
-    fill: '#fff'
+    fill: activeColor
+  },
+  resultNodeBox: {
+    width: 300,
+    padding: [5, 12, 5, 12],
+    itemMargin: 10,
+    labelWidth: 72
   },
   activedResultNodeStyle: {
     stroke: activeColor,
