@@ -87,21 +87,27 @@ export const registerExpandNode = {
   }
 };
 
-export class ExpandNode {
+export class TreeNode {
   constructor(data) {
     const { id, parent, children } = data;
     this.id = id || guid();
     this.parent = parent;
     this.children = children;
+  }
+}
+
+export class ExpandNode extends TreeNode {
+  constructor(data) {
+    super(data);
+    this.label = data.label || '';
     this.shape = registerExpandNode.name;
-    this.calLabelSize(data);
+    this.calNodeSize();
   }
 
-  calLabelSize(data) {
-    const label = data.label || '';
-    this.label = label.trim();
+  calNodeSize() {
+    const text = (this.label || '').trim() || '空';
     const textBox = getTextBox({
-      text: this.label || '空',
+      text,
       lineHeight: nodeOptions.textStyle.lineHeight
     });
     const padding = nodeOptions.nodeBox.padding;

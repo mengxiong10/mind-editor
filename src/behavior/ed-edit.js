@@ -17,7 +17,7 @@ export default {
     const model = item.getModel();
     const { x, y } = graph.getCanvasByPoint(box.x, box.y);
 
-    graph.emit('mx-text-edit', {
+    graph.emit('ed-text-edit', {
       x,
       y,
       width: box.width,

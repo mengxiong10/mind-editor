@@ -17,21 +17,22 @@ export default {
     const className = shape.get('className');
     if (className === 'label' || className === 'description') {
       this.editText(shape, className, model[className]);
-      return;
+    } else if (className === 'level') {
+      this.editSelect(shape, className, model[className]);
+    } else if (className === 'forAutoTest') {
+      this.graph.updateNode({ [className]: !model.forAutoTest });
     }
-    if (className === 'forAutoTest') {
-    }
-
-    // const box = item.getBBox();
-    // const model = item.getModel();
-    // const { x, y } = graph.getCanvasByPoint(box.x, box.y);
-    // graph.emit('mx-node-edit', {
-    //   x,
-    //   y,
-    //   width: box.width,
-    //   height: box.height,
-    //   label: model.label
-    // });
+  },
+  editSelect(shape, key, value) {
+    const graph = this.graph;
+    const bbox = Util.getBBox(shape, shape.getParent());
+    const { x, y } = graph.getCanvasByPoint(bbox.maxX, bbox.maxY);
+    graph.emit('ed-select-edit', {
+      key,
+      value,
+      x,
+      y
+    });
   },
   editText(shape, key, value) {
     const graph = this.graph;
@@ -50,7 +51,7 @@ export default {
     let { x, y } = graph.getCanvasByPoint(bbox.minX, bbox.minY);
     x -= padding[1];
     y -= padding[0];
-    graph.emit('mx-text-edit', {
+    graph.emit('ed-text-edit', {
       key,
       value,
       x,

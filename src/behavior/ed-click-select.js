@@ -21,7 +21,7 @@ module.exports = {
     });
     if (!item.hasState('selected') && self.shouldUpdate.call(self, e)) {
       graph.setItemState(item, 'selected', true);
-      graph.emit('mx-node-selectchange', { target: item, select: true });
+      graph.emit('ed-node-selectchange', { target: item, select: true });
     }
     graph.setAutoPaint(autoPaint);
     graph.paint();

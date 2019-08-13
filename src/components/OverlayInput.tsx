@@ -36,19 +36,17 @@ function OverlayInput(props: OverlayInputProps) {
   const handleBlur = () => {
     if (!cancelledRef.current) {
       props.onConfirm(innerValue);
+      props.onCancel();
     }
     cancelledRef.current = false;
   };
 
   useEffect(() => {
     if (visible) {
+      setInnerValue(value);
       textareaRef.current!.focus();
     }
-  }, [visible]);
-
-  useEffect(() => {
-    setInnerValue(value);
-  }, [value]);
+  }, [value, visible]);
 
   const content = (
     <Overlay style={style} visible={visible}>
@@ -71,4 +69,4 @@ function OverlayInput(props: OverlayInputProps) {
   // return ReactDOM.createPortal(content, document.body);
 }
 
-export default OverlayInput;
+export default React.memo(OverlayInput);

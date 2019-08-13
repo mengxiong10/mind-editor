@@ -19,12 +19,10 @@ export default {
       }
     });
     graph.setItemState(item, 'selected', true);
-    graph.emit('mx-node-contextmenu', {
+    graph.emit('ed-node-contextmenu', {
       target: item,
-      canvasX: e.canvasX,
-      canvasY: e.canvasY,
-      clientX: e.clientX,
-      clientY: e.clientY
+      x: e.canvasX,
+      y: e.canvasY
     });
     graph.setAutoPaint(autoPaint);
     graph.paint();

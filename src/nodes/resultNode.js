@@ -1,11 +1,14 @@
 import { getTextBox } from '../utils/drawText';
 import { nodeOptions } from '../options';
-import { ExpandNode } from './expandNode';
+import { TreeNode } from './expandNode';
+
+// 0, 1, 2, 3
+export const levelOptions = ['无', '低', '中', '高'];
 
 export const registerResultNode = {
   name: 'result-node',
   draw(cfg, group) {
-    const { _description, _label, _forAutoTest, _level, width, height } = cfg;
+    const { _description, _label, forAutoTest, level, width, height } = cfg;
     const { textStyle, nodeStyle, resultNodeBox } = nodeOptions;
     const lineHeight = textStyle.lineHeight;
     const labelWidth = resultNodeBox.labelWidth;
@@ -62,7 +65,7 @@ export const registerResultNode = {
         attrs: {
           x: paddingLeft,
           y: autoTestTop,
-          text: `自动化测试：${_forAutoTest}`
+          text: `自动化测试：${forAutoTest ? '是' : '否'}`
         },
         cfg: {
           className: 'forAutoTest'
@@ -72,7 +75,7 @@ export const registerResultNode = {
         attrs: {
           x: labelWidth + paddingLeft + 16 + 20,
           y: autoTestTop,
-          text: `优先级: ${_level}`
+          text: `优先级: ${levelOptions[level]}`
         },
         cfg: {
           className: 'level'
@@ -105,19 +108,16 @@ export const registerResultNode = {
     return rect;
   },
   setState(name, value, item) {
-    // const group = item.getContainer();
-    // const shapes = group.get('children');
-    // const rectShape = shapes[0];
-    // const textShape = shapes[shapes.length - 1];
-    // if (name === 'selected') {
-    //   if (value) {
-    //     rectShape.attr(nodeOptions.activedNodeStyle);
-    //     textShape.attr(nodeOptions.activedTextStyle);
-    //   } else {
-    //     rectShape.attr(nodeOptions.nodeStyle);
-    //     textShape.attr(nodeOptions.textStyle);
-    //   }
-    // }
+    const group = item.getContainer();
+    const shapes = group.get('children');
+    const rectShape = shapes[0];
+    if (name === 'selected') {
+      if (value) {
+        rectShape.attr(nodeOptions.activedNodeStyle);
+      } else {
+        rectShape.attr(nodeOptions.nodeStyle);
+      }
+    }
   },
   getAnchorPoints() {
     return [
@@ -127,20 +127,20 @@ export const registerResultNode = {
   }
 };
 
-export class ResultNode extends ExpandNode {
+export class ResultNode extends TreeNode {
   constructor(data) {
     super(data);
+    this.label = data.label || '';
+    this.description = data.description || '';
+    this.forAutoTest = data.forAutoTest || false;
+    this.level = data.level || 0;
     this.shape = registerResultNode.name;
-    this.forAutoTest = data.forAutoTest;
-    this.level = data.level;
-    this._forAutoTest = this.forAutoTest ? '是' : '否';
-    this._level = this.level;
+    this.calNodeSize();
   }
 
-  calLabelSize(data) {
-    const { label = '', description = '' } = data;
-    this.label = label.trim();
-    this.description = description.trim();
+  calNodeSize() {
+    const label = (this.label || '').trim();
+    const description = (this.description || '').trim();
     const { lineHeight } = nodeOptions.textStyle;
     const {
       width,
@@ -149,7 +149,7 @@ export class ResultNode extends ExpandNode {
       itemMargin
     } = nodeOptions.resultNodeBox;
     const maxTextWidth = width - labelWidth - padding[1] - padding[3];
-    const textBoxs = [this.label, this.description].map(v =>
+    const textBoxs = [label, description].map(v =>
       getTextBox({
         lineHeight,
         maxWidth: maxTextWidth,
