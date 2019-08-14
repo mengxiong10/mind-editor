@@ -1,16 +1,22 @@
 import { levelOptions } from '../editor';
 
 interface MenuItem {
-  name: string;
+  name?: string;
   key: string | number;
-  event: string;
+  event?: string;
+  type?: 'Item' | 'Divider';
   value?: any;
 }
 
 export const contextMenuItems: MenuItem[] = [
-  { name: '新增条件', key: 'rc-add-node', event: 'rc-add-node' },
-  { name: '新增结果', key: 'rc-add-result-node', event: 'rc-add-result-node' },
-  { name: '删除节点', key: 'rc-delete-node', event: 'rc-delete-node' }
+  { name: '标记为通过', key: 'success', event: 'rc-mark', value: 1 },
+  { name: '标记为不通过', key: 'fail', event: 'rc-mark', value: 2 },
+  { name: '标记为受阻', key: 'block', event: 'rc-mark', value: 3 },
+  { name: '标记为重测', key: 'retest', event: 'rc-mark', value: 4 },
+  { type: 'Divider', key: 'divider' },
+  { name: '新增条件', key: 'add-node', event: 'rc-add-node' },
+  { name: '新增结果', key: 'add-result-node', event: 'rc-add-result-node' },
+  { name: '删除节点', key: 'delete-node', event: 'rc-delete-node' }
 ];
 
 export const levelMenuItems: MenuItem[] = levelOptions.map(

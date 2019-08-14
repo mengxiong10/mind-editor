@@ -8,18 +8,20 @@ import {
   ResultNode,
   levelOptions
 } from './nodes/resultNode';
-import mxContextmenu from './behavior/ed-contextmenu';
-import mxClickSelect from './behavior/ed-click-select';
-import mxEdit from './behavior/ed-edit';
-import mxResultEdit from './behavior/ed-result-edit';
+import edContextmenu from './behavior/ed-contextmenu';
+import edClickSelect from './behavior/ed-click-select';
+import edEdit from './behavior/ed-edit';
+import edResultEdit from './behavior/ed-result-edit';
+import edMoveToCenter from './behavior/ed-move-to-center';
 
 G6.registerNode(registerExpandNode.name, registerExpandNode);
 G6.registerNode(registerResultNode.name, registerResultNode);
 
-G6.registerBehavior('ed-contextmenu', mxContextmenu);
-G6.registerBehavior('ed-click-select', mxClickSelect);
-G6.registerBehavior('ed-edit', mxEdit);
-G6.registerBehavior('ed-result-edit', mxResultEdit);
+G6.registerBehavior('ed-contextmenu', edContextmenu);
+G6.registerBehavior('ed-click-select', edClickSelect);
+G6.registerBehavior('ed-edit', edEdit);
+G6.registerBehavior('ed-result-edit', edResultEdit);
+G6.registerBehavior('ed-move-to-center', edMoveToCenter);
 
 const defaultData = {
   label: '我是根节点'
@@ -77,18 +79,20 @@ export class Editor extends G6.TreeGraph {
               return target.get('className') !== 'collapse-icon';
             }
           },
+          'ed-move-to-center',
           'ed-contextmenu',
           'ed-edit',
           'ed-result-edit',
           'drag-canvas',
           'zoom-canvas'
-        ]
+        ],
+        lock: []
       }
     });
     this.currentId = '';
     this.read(this.parseData(data || defaultData));
     this.moveToCenter();
-    this.bindEditorEvent();
+    this.bindKeyboardEvent();
   }
 
   // 初始化数据
@@ -112,12 +116,19 @@ export class Editor extends G6.TreeGraph {
     this.currentId = id;
   }
 
-  bindEditorEvent() {
-    this.on('ed-node-contextmenu', evt => {
-      this.setCurrent(evt.target.get('id'));
-    });
-    this.on('ed-node-selectchange', evt => {
-      this.setCurrent(evt.target.get('id'));
+  bindKeyboardEvent() {
+    const keyMap = {
+      '45': this.addNode, // insert
+      '9': this.addNode, // tab
+      '46': this.deleteNode, // delete
+      '35': this.addResultNode // end
+    };
+    this.on('keydown', evt => {
+      const code = evt.keyCode;
+      if (keyMap[code]) {
+        evt.preventDefault();
+        keyMap[code].call(this);
+      }
     });
   }
 

@@ -22,12 +22,12 @@ interface ReducerAction<S> {
 interface InputState {
   visible: boolean;
   value: string;
-  style: { top: number; left: number; width: number };
+  style: React.CSSProperties;
 }
 
 interface MenuState {
   visible: boolean;
-  style: { top: number; left: number };
+  style: React.CSSProperties;
   placement: OverlayMenuProps['placement'];
   type: keyof typeof menuItemsMap;
 }
@@ -57,7 +57,8 @@ function TreeEditor(props: TreeEditorProps) {
       style: {
         top: 0,
         left: 0,
-        width: 0
+        width: 0,
+        height: 0
       }
     }
   );
@@ -79,6 +80,7 @@ function TreeEditor(props: TreeEditorProps) {
 
   // 关闭输入框
   const handleInputClose = useCallback(() => {
+    editorRef.current.setMode('default');
     dispatchInput({ type: 'hide' });
   }, []);
 
@@ -119,16 +121,20 @@ function TreeEditor(props: TreeEditorProps) {
       });
     });
     editor.on('ed-text-edit', (evt: any) => {
-      const { width, x, y, value, key } = evt;
+      const { width, height, zoom, x, y, value, key } = evt;
       tempRef.current.inputKey = key;
+      editor.setMode('lock');
       dispatchInput({
         type: 'show',
         payload: {
           value,
           style: {
             width,
+            height,
             left: x,
-            top: y
+            top: y,
+            transform: `scale(${zoom})`,
+            transformOrigin: 'top left'
           }
         }
       });
@@ -149,9 +155,12 @@ function TreeEditor(props: TreeEditorProps) {
     editor.on('rc-add-node', () => editor.addNode());
     editor.on('rc-add-result-node', () => editor.addResultNode());
     editor.on('rc-delete-node', () => editor.deleteNode());
-    editor.on('rc-update-level', (level: number) =>
-      editor.updateNode({ level }, false)
-    );
+    editor.on('rc-update-level', (level: number) => {
+      editor.updateNode({ level }, false);
+    });
+    editor.on('rc-mark', (status: number) => {
+      editor.updateNode({ status }, false);
+    });
   }, []);
 
   return (

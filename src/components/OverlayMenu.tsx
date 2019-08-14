@@ -11,7 +11,8 @@ export interface OverlayMenuProps {
   onSelect: (key: string) => void;
   items: {
     key: string | number;
-    name: string;
+    name?: string;
+    type?: 'Item' | 'Divider';
   }[];
 }
 
@@ -63,9 +64,12 @@ function OverlayMenu(props: OverlayMenuProps) {
         onClick={handleClick}
         selectable={false}
       >
-        {items.map(item => (
-          <Menu.Item key={item.key}>{item.name}</Menu.Item>
-        ))}
+        {items.map(item => {
+          if (item.type === 'Divider') {
+            return <Menu.Divider key={item.key} />;
+          }
+          return <Menu.Item key={item.key}>{item.name}</Menu.Item>;
+        })}
       </Menu>
     </Overlay>
   );

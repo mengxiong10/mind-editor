@@ -19,6 +19,7 @@ export default {
       }
     });
     graph.setItemState(item, 'selected', true);
+    graph.setCurrent(item.get('id'));
     graph.emit('ed-node-contextmenu', {
       target: item,
       x: e.canvasX,

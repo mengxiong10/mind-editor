@@ -21,6 +21,7 @@ module.exports = {
     });
     if (!item.hasState('selected') && self.shouldUpdate.call(self, e)) {
       graph.setItemState(item, 'selected', true);
+      graph.setCurrent(item.get('id'));
       graph.emit('ed-node-selectchange', { target: item, select: true });
     }
     graph.setAutoPaint(autoPaint);

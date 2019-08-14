@@ -21,7 +21,7 @@ function OverlayInput(props: OverlayInputProps) {
     if (evt.keyCode === 27) {
       setInnerValue(value);
       cancelledRef.current = true;
-      props.onCancel();
+      textareaRef.current!.blur();
     } else if (evt.keyCode === 13) {
       if (evt.ctrlKey) {
         setInnerValue(v => `${v}\n`);
@@ -36,8 +36,8 @@ function OverlayInput(props: OverlayInputProps) {
   const handleBlur = () => {
     if (!cancelledRef.current) {
       props.onConfirm(innerValue);
-      props.onCancel();
     }
+    props.onCancel();
     cancelledRef.current = false;
   };
 
@@ -66,7 +66,6 @@ function OverlayInput(props: OverlayInputProps) {
     </Overlay>
   );
   return content;
-  // return ReactDOM.createPortal(content, document.body);
 }
 
 export default React.memo(OverlayInput);
