@@ -7,15 +7,13 @@ export function guid() {
   });
 }
 
-export function traverseTree(parent, callback, getChild, runSelf = false) {
-  const children = getChild(parent);
-  if (runSelf) {
-    callback(parent, null, null);
+export function traverseTree(data, fn) {
+  if (fn(data) === false) {
+    return;
   }
-  if (Array.isArray(children)) {
-    children.forEach((child, index) => {
-      callback(child, parent, index);
-      traverseTree(child, callback, getChild);
+  if (Array.isArray(data.children)) {
+    data.children.forEach(child => {
+      traverseTree(child, fn);
     });
   }
 }

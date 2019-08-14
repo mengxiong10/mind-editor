@@ -1,5 +1,3 @@
-import { guid } from '../utils/base';
-import { getTextBox } from '../utils/drawText';
 import { nodeOptions } from '../options';
 
 export const statusOptions = [
@@ -36,8 +34,10 @@ const getRectStyle = (status = 0) => {
     : nodeOptions.nodeStyle;
 };
 
+export const expandNodeName = 'expand-node';
+
 export const registerExpandNode = {
-  name: 'expand-node',
+  name: expandNodeName,
   // TODO: 开启动画的时候父节点没有重新draw
   draw(cfg, group) {
     const { textStyle, nodeBox } = nodeOptions;
@@ -124,36 +124,3 @@ export const registerExpandNode = {
     ];
   }
 };
-
-export class TreeNode {
-  constructor(data) {
-    const { id, parent, children } = data;
-    this.id = id || guid();
-    this.parent = parent;
-    this.children = children;
-  }
-}
-
-export class ExpandNode extends TreeNode {
-  constructor(data) {
-    super(data);
-    this.label = data.label || '';
-    this.shape = registerExpandNode.name;
-    this.calNodeSize();
-  }
-
-  calNodeSize() {
-    const text = (this.label || '').trim() || '空';
-    const textBox = getTextBox({
-      text,
-      lineHeight: nodeOptions.textStyle.lineHeight
-    });
-    const padding = nodeOptions.nodeBox.padding;
-    const width = textBox.width + padding[1] + padding[3];
-    const height = textBox.height + padding[0] + padding[2];
-    this.width = width;
-    this.height = height;
-    // 绘制使用
-    this._label = textBox.value;
-  }
-}

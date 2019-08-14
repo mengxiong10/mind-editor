@@ -1,5 +1,3 @@
-import { nodeOptions } from '../options';
-
 export default {
   getEvents() {
     return {
