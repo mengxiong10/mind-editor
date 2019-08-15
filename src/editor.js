@@ -4,6 +4,7 @@ import Hierarchy from '@antv/hierarchy';
 import { nodeOptions } from './options';
 import { registerExpandNode } from './nodeShape/expandNode';
 import { registerResultNode, levelOptions } from './nodeShape/resultNode';
+import { registerPlaceholderNode } from './nodeShape/placeholderNode';
 import { ExpandNode } from './nodeClass/expandNode';
 import { ResultNode } from './nodeClass/resultNode';
 import { guid } from './utils/base';
@@ -12,15 +13,18 @@ import edClickSelect from './behavior/ed-click-select';
 import edEdit from './behavior/ed-edit';
 import edResultEdit from './behavior/ed-result-edit';
 import edShortcut from './behavior/ed-shortcut';
+import edDragNode from './behavior/ed-drag-node';
 
 G6.registerNode(registerExpandNode.name, registerExpandNode);
 G6.registerNode(registerResultNode.name, registerResultNode);
+G6.registerNode(registerPlaceholderNode.name, registerPlaceholderNode);
 
 G6.registerBehavior('ed-contextmenu', edContextmenu);
 G6.registerBehavior('ed-click-select', edClickSelect);
 G6.registerBehavior('ed-edit', edEdit);
 G6.registerBehavior('ed-result-edit', edResultEdit);
 G6.registerBehavior('ed-shortcut', edShortcut);
+G6.registerBehavior('ed-drag-node', edDragNode);
 
 const defaultData = {
   label: '我是根节点'
@@ -89,6 +93,9 @@ export class Editor extends G6.TreeGraph {
               { keyCode: 86, ctrlKey: true, handler: 'pasteNode' } // ctrl + v
             ]
           },
+          {
+            type: 'ed-drag-node'
+          },
           'ed-contextmenu',
           'ed-edit',
           'ed-result-edit',
@@ -98,10 +105,13 @@ export class Editor extends G6.TreeGraph {
         lock: []
       }
     });
-    this.currentId = '';
+    this.currentId = null;
     this.clipboardData = null;
     this.read(this.parseData(data || defaultData));
     this.moveToCenter();
+    if (process.env.NODE_ENV === 'development') {
+      window.tree = this;
+    }
   }
 
   // 初始化数据
@@ -125,7 +135,8 @@ export class Editor extends G6.TreeGraph {
     this.currentId = id;
   }
 
-  addNode(label = '条件分支') {
+  addNode(label) {
+    label = label || guid();
     if (this.currentId) {
       const data = new ExpandNode({ label, parent: this.currentId });
       this.addChild(data, this.currentId);
@@ -142,7 +153,7 @@ export class Editor extends G6.TreeGraph {
   deleteNode() {
     if (this.currentId) {
       const id = this.currentId;
-      this.currentId = '';
+      this.setCurrent(null);
       this.removeChild(id);
     }
   }
@@ -181,18 +192,19 @@ export class Editor extends G6.TreeGraph {
     if (this.currentId && this.clipboardData) {
       const currentModel = this.findDataById(this.clipboardData);
       if (currentModel) {
-        const data = this._cloneNode(currentModel);
+        const data = this._cloneNode(currentModel, this.currentId);
         this.addChild(data, this.currentId);
       }
     }
   }
 
-  _cloneNode(node) {
+  _cloneNode(node, parent) {
     const copy = Object.create(node);
     Object.assign(copy, node);
     copy.id = guid();
+    copy.parent = parent;
     if (Array.isArray(copy.children)) {
-      copy.children = copy.children.map(v => this._cloneNode(v));
+      copy.children = copy.children.map(v => this._cloneNode(v, copy.id));
     }
     return copy;
   }

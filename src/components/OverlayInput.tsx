@@ -34,7 +34,7 @@ function OverlayInput(props: OverlayInputProps) {
   };
 
   const handleBlur = () => {
-    if (!cancelledRef.current) {
+    if (!cancelledRef.current && innerValue !== value) {
       props.onConfirm(innerValue);
     }
     props.onCancel();

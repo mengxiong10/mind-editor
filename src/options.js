@@ -36,8 +36,18 @@ export const nodeOptions = {
   activedResultNodeStyle: {
     stroke: activeColor,
     fill: '#fff'
-  },
-  placeholderNodeStyle: {
-    fill: '#91D5FF'
   }
+};
+
+export const placeholderNodeStyle = {
+  fill: '#91D5FF'
+};
+
+export const delegateStyle = {
+  fill: '#F3F9FF',
+  fillOpacity: 0.5,
+  stroke: '#1890FF',
+  strokeOpacity: 0.9,
+  lineDash: [4, 4],
+  radius: 4
 };
