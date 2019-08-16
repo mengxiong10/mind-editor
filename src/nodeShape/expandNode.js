@@ -1,4 +1,6 @@
 import { nodeOptions } from '../options';
+import { getTextBox } from '../utils/drawText';
+import { guid } from '../utils/base';
 
 export const statusOptions = [
   { name: '未测', type: 'notest', value: 0, style: nodeOptions.nodeStyle },
@@ -122,5 +124,44 @@ export const registerExpandNode = {
       [0, 0.5], // 左侧中间
       [1, 0.5] // 右侧中间
     ];
+  }
+};
+
+const calNodeSize = data => {
+  const text = String(data.label || '').trim() || '空';
+  const textBox = getTextBox({
+    text,
+    lineHeight: nodeOptions.textStyle.lineHeight
+  });
+  const padding = nodeOptions.nodeBox.padding;
+  const width = textBox.width + padding[1] + padding[3];
+  const height = textBox.height + padding[0] + padding[2];
+  data.width = width;
+  data.height = height;
+  // 绘制使用
+  data._label = textBox.value;
+};
+
+export const expandNodeData = {
+  name: expandNodeName,
+  createNode(data = {}) {
+    const defaultData = {
+      id: guid(),
+      shape: this.name,
+      label: ''
+    };
+    return this.updateNode(defaultData, data, true);
+  },
+  updateNode(oldValue, value, newNode = false) {
+    const needCalNode =
+      newNode ||
+      ['label'].some(key => {
+        return value[key] !== undefined && value[key] !== oldValue[key];
+      });
+    Object.assign(oldValue, value);
+    if (needCalNode) {
+      calNodeSize(oldValue);
+    }
+    return oldValue;
   }
 };

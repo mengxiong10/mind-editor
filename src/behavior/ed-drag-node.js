@@ -12,7 +12,6 @@ module.exports = {
     return {
       'node:dragstart': 'onDragStart',
       mousemove: 'onDrag',
-      dragend: 'onDragEnd',
       drop: 'onDragEnd',
       'canvas:mouseleave': 'onDragEnd'
     };
@@ -23,6 +22,9 @@ module.exports = {
     }
     const graph = this.graph;
     const model = evt.item.get('model');
+    if (!model.parent) {
+      return;
+    }
     this.pointDiff = {
       x: evt.x - model.x,
       y: evt.y - model.y
@@ -52,14 +54,14 @@ module.exports = {
     }
     const model = this.target;
     this.target = null;
-    this.hotAreas = [];
+    this.hotAreas = null;
     if (this.delegateShape) {
       this.delegateShape.remove();
       this.delegateShape = null;
     }
     const graph = this.graph;
     if (this.placeholder) {
-      const { index, parent } = this.placeholder.index;
+      const { index, parent } = this.placeholder;
       const { siblings } = this._removePlaceholder();
       model.parent = parent;
       siblings.splice(index, 0, model);
@@ -70,7 +72,7 @@ module.exports = {
     graph.changeData();
   },
   _findHotArea(x, y) {
-    return this.hotAreas.find(item => {
+    return (this.hotAreas || []).find(item => {
       return (
         x >= item.minX && x <= item.maxX && y >= item.minY && y <= item.maxY
       );

@@ -86,7 +86,7 @@ function TreeEditor(props: TreeEditorProps) {
 
   // 确定输入框
   const handleInputConfirm = useCallback((val: string) => {
-    editorRef.current.updateNode({ [tempRef.current.inputKey]: val }, true);
+    editorRef.current.updateNode({ [tempRef.current.inputKey]: val });
   }, []);
 
   // 关闭菜单
@@ -156,10 +156,10 @@ function TreeEditor(props: TreeEditorProps) {
     editor.on('rc-add-result-node', () => editor.addResultNode());
     editor.on('rc-delete-node', () => editor.deleteNode());
     editor.on('rc-update-level', (level: number) => {
-      editor.updateNode({ level }, false);
+      editor.updateNode({ level });
     });
     editor.on('rc-mark', (status: number) => {
-      editor.updateNode({ status }, false);
+      editor.updateNode({ status });
     });
   }, []);
 

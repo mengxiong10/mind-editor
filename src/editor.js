@@ -2,11 +2,8 @@
 import G6 from '@antv/g6/src/index';
 import Hierarchy from '@antv/hierarchy';
 import { nodeOptions } from './options';
-import { registerExpandNode } from './nodeShape/expandNode';
-import { registerResultNode, levelOptions } from './nodeShape/resultNode';
-import { registerPlaceholderNode } from './nodeShape/placeholderNode';
-import { ExpandNode } from './nodeClass/expandNode';
-import { ResultNode } from './nodeClass/resultNode';
+import { levelOptions } from './nodeShape/resultNode';
+import { getNodeModule } from './nodeShape';
 import { guid } from './utils/base';
 import edContextmenu from './behavior/ed-contextmenu';
 import edClickSelect from './behavior/ed-click-select';
@@ -14,10 +11,6 @@ import edEdit from './behavior/ed-edit';
 import edResultEdit from './behavior/ed-result-edit';
 import edShortcut from './behavior/ed-shortcut';
 import edDragNode from './behavior/ed-drag-node';
-
-G6.registerNode(registerExpandNode.name, registerExpandNode);
-G6.registerNode(registerResultNode.name, registerResultNode);
-G6.registerNode(registerPlaceholderNode.name, registerPlaceholderNode);
 
 G6.registerBehavior('ed-contextmenu', edContextmenu);
 G6.registerBehavior('ed-click-select', edClickSelect);
@@ -115,18 +108,15 @@ export class Editor extends G6.TreeGraph {
   }
 
   // 初始化数据
-  parseData(node) {
-    let result;
-    if (node.shape === 'result-node') {
-      result = new ResultNode(node);
-    } else {
-      result = new ExpandNode(node);
+  parseData(node, parent) {
+    node.parent = parent;
+    if (!node.shape) {
+      node.shape = 'expand-node';
     }
-
-    if (node.children) {
-      result.children = node.children.map(v =>
-        this.parseData({ ...v, parent: result.id })
-      );
+    const nodeModule = getNodeModule(node.shape);
+    const result = nodeModule.createNode(node);
+    if (result.children) {
+      result.children.forEach(v => this.parseData(v, result.id));
     }
     return result;
   }
@@ -135,17 +125,23 @@ export class Editor extends G6.TreeGraph {
     this.currentId = id;
   }
 
-  addNode(label) {
-    label = label || guid();
+  addNode(label = '条件分支') {
     if (this.currentId) {
-      const data = new ExpandNode({ label, parent: this.currentId });
+      const nodeModule = getNodeModule('expand-node');
+      const data = nodeModule.createNode({
+        parent: this.currentId,
+        label
+      });
       this.addChild(data, this.currentId);
     }
   }
 
   addResultNode() {
     if (this.currentId) {
-      const data = new ResultNode({ parent: this.currentId });
+      const nodeModule = getNodeModule('result-node');
+      const data = nodeModule.createNode({
+        parent: this.currentId
+      });
       this.addChild(data, this.currentId);
     }
   }
@@ -158,25 +154,19 @@ export class Editor extends G6.TreeGraph {
     }
   }
 
-  updateNode(obj, updatePosition = false) {
+  updateNode(obj) {
     if (this.currentId) {
       const currentModel = this.findDataById(this.currentId);
       if (currentModel) {
-        let hasChange = false;
-        Object.keys(obj).forEach(key => {
-          if (obj[key] !== currentModel[key]) {
-            currentModel[key] = obj[key];
-            hasChange = true;
-          }
-        });
-        if (!hasChange) {
-          return;
-        }
-        if (updatePosition) {
-          currentModel.calNodeSize();
+        const oldWidth = currentModel.width;
+        const oldHeight = currentModel.height;
+        const nodeModule = getNodeModule(currentModel.shape);
+        const newModel = nodeModule.updateNode(currentModel, obj);
+        const { width, height } = newModel;
+        if (width !== oldWidth || height !== oldHeight) {
           this.changeData();
         } else {
-          this.update(this.currentId, currentModel);
+          this.update(this.currentId, newModel);
         }
       }
     }
@@ -199,14 +189,11 @@ export class Editor extends G6.TreeGraph {
   }
 
   _cloneNode(node, parent) {
-    const copy = Object.create(node);
-    Object.assign(copy, node);
-    copy.id = guid();
-    copy.parent = parent;
-    if (Array.isArray(copy.children)) {
-      copy.children = copy.children.map(v => this._cloneNode(v, copy.id));
+    const result = { ...node, id: guid(), parent };
+    if (Array.isArray(result.children)) {
+      result.children = result.children.map(v => this._cloneNode(v, result.id));
     }
-    return copy;
+    return result;
   }
 
   moveToCenter() {
