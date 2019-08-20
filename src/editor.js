@@ -1,23 +1,15 @@
 /* eslint-disable class-methods-use-this */
 import G6 from '@antv/g6/src/index';
 import Hierarchy from '@antv/hierarchy';
-import { nodeOptions } from './options';
+import { edgeStyle } from './options';
 import { levelOptions } from './nodeShape/resultNode';
-import { getNodeModule } from './nodeShape';
+import { getNodeModule } from './nodeModules';
 import { guid } from './utils/base';
-import edContextmenu from './behavior/ed-contextmenu';
-import edClickSelect from './behavior/ed-click-select';
-import edEdit from './behavior/ed-edit';
-import edResultEdit from './behavior/ed-result-edit';
-import edShortcut from './behavior/ed-shortcut';
-import edDragNode from './behavior/ed-drag-node';
+import { registerCustomNode } from './nodeShape';
+import { registerCustomBehavior } from './behavior';
 
-G6.registerBehavior('ed-contextmenu', edContextmenu);
-G6.registerBehavior('ed-click-select', edClickSelect);
-G6.registerBehavior('ed-edit', edEdit);
-G6.registerBehavior('ed-result-edit', edResultEdit);
-G6.registerBehavior('ed-shortcut', edShortcut);
-G6.registerBehavior('ed-drag-node', edDragNode);
+registerCustomNode(G6);
+registerCustomBehavior(G6);
 
 const defaultData = {
   label: '我是根节点'
@@ -56,9 +48,7 @@ export class Editor extends G6.TreeGraph {
       defaultEdge: {
         shape: 'cubic-horizontal'
       },
-      edgeStyle: {
-        default: nodeOptions.edgeStyle
-      },
+      edgeStyle,
       modes: {
         default: [
           {
@@ -115,8 +105,7 @@ export class Editor extends G6.TreeGraph {
     if (!node.shape) {
       node.shape = 'expand-node';
     }
-    const nodeModule = getNodeModule(node.shape);
-    const result = nodeModule.createNode(node);
+    const result = getNodeModule(node.shape).create(node);
     if (result.children) {
       result.children.forEach(v => this.parseData(v, result.id));
     }
@@ -129,8 +118,7 @@ export class Editor extends G6.TreeGraph {
 
   addNode(label = '条件分支') {
     if (this.currentId) {
-      const nodeModule = getNodeModule('expand-node');
-      const data = nodeModule.createNode({
+      const data = getNodeModule('expand-node').create({
         parent: this.currentId,
         label
       });
@@ -140,8 +128,7 @@ export class Editor extends G6.TreeGraph {
 
   addResultNode() {
     if (this.currentId) {
-      const nodeModule = getNodeModule('result-node');
-      const data = nodeModule.createNode({
+      const data = getNodeModule('expand-node').create({
         parent: this.currentId
       });
       this.addChild(data, this.currentId);
@@ -162,8 +149,10 @@ export class Editor extends G6.TreeGraph {
       if (currentModel) {
         const oldWidth = currentModel.width;
         const oldHeight = currentModel.height;
-        const nodeModule = getNodeModule(currentModel.shape);
-        const newModel = nodeModule.updateNode(currentModel, obj);
+        const newModel = getNodeModule(currentModel.shape).update(
+          currentModel,
+          obj
+        );
         const { width, height } = newModel;
         if (width !== oldWidth || height !== oldHeight) {
           this.changeData();

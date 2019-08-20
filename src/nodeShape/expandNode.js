@@ -1,9 +1,7 @@
-import { nodeOptions } from '../options';
-import { getTextBox } from '../utils/drawText';
-import { guid } from '../utils/base';
+import { nodeStyle, textStyle, expandNodeBox } from '../options';
 
 export const statusOptions = [
-  { name: '未测', type: 'notest', value: 0, style: nodeOptions.nodeStyle },
+  { name: '未测', type: 'notest', value: 0, style: nodeStyle.default },
   {
     name: '通过',
     type: 'success',
@@ -33,7 +31,7 @@ export const statusOptions = [
 const getRectStyle = (status = 0) => {
   return statusOptions[status]
     ? statusOptions[status].style
-    : nodeOptions.nodeStyle;
+    : nodeStyle.default;
 };
 
 export const expandNodeName = 'expand-node';
@@ -42,17 +40,18 @@ export const registerExpandNode = {
   name: expandNodeName,
   // TODO: 开启动画的时候父节点没有重新draw
   draw(cfg, group) {
-    const { textStyle, nodeBox } = nodeOptions;
-    const padding = nodeBox.padding;
+    const { padding } = expandNodeBox;
     const paddingTop = padding[0];
     const paddingLeft = padding[3];
     const { collapsed, children, width, height, _label, status } = cfg;
 
     const textAttrs = {
       x: paddingLeft,
-      y: paddingTop + (textStyle.lineHeight - textStyle.fontSize) / 2,
+      y:
+        paddingTop +
+        (textStyle.default.lineHeight - textStyle.default.fontSize) / 2,
       text: _label,
-      ...textStyle
+      ...textStyle.default
     };
 
     const labelObj = group.addShape('text', {
@@ -87,7 +86,7 @@ export const registerExpandNode = {
           x: width + cr,
           y: height / 2,
           r: cr,
-          ...nodeOptions.nodeStyle
+          ...nodeStyle.default
         },
         className: 'collapse-icon'
       });
@@ -95,7 +94,7 @@ export const registerExpandNode = {
         attrs: {
           lineWidth: 2,
           path: collapsed ? collapseIcon : expandIcon,
-          stroke: nodeOptions.nodeStyle.stroke
+          stroke: nodeStyle.default.stroke
         },
         className: 'collapse-icon'
       });
@@ -111,11 +110,9 @@ export const registerExpandNode = {
     // const textShape = shapes[shapes.length - 1];
     if (name === 'selected') {
       if (value) {
-        rectShape.attr(nodeOptions.activedNodeStyle);
-        // textShape.attr(nodeOptions.activedTextStyle);
+        rectShape.attr(nodeStyle.active);
       } else {
         rectShape.attr(getRectStyle(model.status));
-        // textShape.attr(nodeOptions.textStyle);
       }
     }
   },
@@ -124,44 +121,5 @@ export const registerExpandNode = {
       [0, 0.5], // 左侧中间
       [1, 0.5] // 右侧中间
     ];
-  }
-};
-
-const calNodeSize = data => {
-  const text = String(data.label || '').trim() || '空';
-  const textBox = getTextBox({
-    text,
-    lineHeight: nodeOptions.textStyle.lineHeight
-  });
-  const padding = nodeOptions.nodeBox.padding;
-  const width = textBox.width + padding[1] + padding[3];
-  const height = textBox.height + padding[0] + padding[2];
-  data.width = width;
-  data.height = height;
-  // 绘制使用
-  data._label = textBox.value;
-};
-
-export const expandNodeData = {
-  name: expandNodeName,
-  createNode(data = {}) {
-    const defaultData = {
-      id: guid(),
-      shape: this.name,
-      label: ''
-    };
-    return this.updateNode(defaultData, data, true);
-  },
-  updateNode(oldValue, value, newNode = false) {
-    const needCalNode =
-      newNode ||
-      ['label'].some(key => {
-        return value[key] !== undefined && value[key] !== oldValue[key];
-      });
-    Object.assign(oldValue, value);
-    if (needCalNode) {
-      calNodeSize(oldValue);
-    }
-    return oldValue;
   }
 };

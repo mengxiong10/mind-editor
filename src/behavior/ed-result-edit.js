@@ -1,5 +1,5 @@
 import { Util } from '@antv/g6';
-import { nodeOptions } from '../options';
+import { resultNodeBox } from '../options';
 
 export default {
   getEvents() {
@@ -36,14 +36,10 @@ export default {
   },
   editText(shape, key, value) {
     const graph = this.graph;
-    const { nodeBox, resultNodeBox } = nodeOptions;
-    const { padding } = nodeBox;
+    const { padding, labelWidth } = resultNodeBox;
 
     const textWidth =
-      resultNodeBox.width -
-      resultNodeBox.labelWidth -
-      resultNodeBox.padding[1] -
-      resultNodeBox.padding[3];
+      resultNodeBox.width - labelWidth - padding[1] - padding[3];
 
     const bbox = Util.getBBox(shape, shape.getParent());
     const width = textWidth + padding[1] + padding[3];

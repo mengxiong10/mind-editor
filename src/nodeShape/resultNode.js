@@ -1,6 +1,4 @@
-import { nodeOptions } from '../options';
-import { getTextBox } from '../utils/drawText';
-import { guid } from '../utils/base';
+import { textStyle, nodeStyle, resultNodeBox } from '../options';
 
 // 0, 1, 2, 3
 export const levelOptions = ['无', '低', '中', '高'];
@@ -11,16 +9,14 @@ export const registerResultNode = {
   name: resultNodeName,
   draw(cfg, group) {
     const { _description, _label, forAutoTest, level, width, height } = cfg;
-    const { textStyle, nodeStyle, resultNodeBox } = nodeOptions;
-    const lineHeight = textStyle.lineHeight;
+    const { lineHeight, fontSize } = textStyle.default;
     const labelWidth = resultNodeBox.labelWidth;
     const padding = resultNodeBox.padding;
     const paddingTop = padding[0];
     const paddingLeft = padding[3];
     const marginBottom = resultNodeBox.itemMargin;
 
-    const descTop =
-      paddingTop + (textStyle.lineHeight - textStyle.fontSize) / 2;
+    const descTop = paddingTop + (lineHeight - fontSize) / 2;
 
     const labelTop =
       _description.split('\n').length * lineHeight + marginBottom + descTop;
@@ -92,7 +88,7 @@ export const registerResultNode = {
         x: 0,
         y: 0,
         radius: 4,
-        ...nodeStyle
+        ...nodeStyle.default
       }
     });
 
@@ -100,7 +96,7 @@ export const registerResultNode = {
       const { attrs, cfg: cfgData } = textShape[key];
       group.addShape('text', {
         attrs: {
-          ...textStyle,
+          ...textStyle.default,
           ...attrs
         },
         ...cfgData
@@ -115,9 +111,9 @@ export const registerResultNode = {
     const rectShape = shapes[0];
     if (name === 'selected') {
       if (value) {
-        rectShape.attr(nodeOptions.activedNodeStyle);
+        rectShape.attr(nodeStyle.active);
       } else {
-        rectShape.attr(nodeOptions.nodeStyle);
+        rectShape.attr(nodeStyle.default);
       }
     }
   },
@@ -126,58 +122,5 @@ export const registerResultNode = {
       [0, 0.5], // 左侧中间
       [1, 0.5] // 右侧中间
     ];
-  }
-};
-
-const calNodeSize = data => {
-  const label = String(data.label || '').trim();
-  const description = String(data.description || '').trim();
-  const { lineHeight } = nodeOptions.textStyle;
-  const { width, labelWidth, padding, itemMargin } = nodeOptions.resultNodeBox;
-  const maxTextWidth = width - labelWidth - padding[1] - padding[3];
-  const textBoxs = [label, description].map(v =>
-    getTextBox({
-      lineHeight,
-      maxWidth: maxTextWidth,
-      text: v || '空'
-    })
-  );
-  const textHeight = textBoxs.reduce((acc, cur) => acc + cur.height, 0);
-  const height =
-    textHeight +
-    textBoxs.length * itemMargin +
-    lineHeight +
-    padding[0] +
-    padding[2];
-  data.width = width;
-  data.height = height;
-  data._label = textBoxs[0].value;
-  data._description = textBoxs[1].value;
-};
-
-export const resultNodeData = {
-  name: resultNodeName,
-  createNode(data = {}) {
-    const defaultData = {
-      id: guid(),
-      shape: this.name,
-      label: '',
-      description: '',
-      forAutoTest: false,
-      level: 0
-    };
-    return this.updateNode(defaultData, data, true);
-  },
-  updateNode(oldValue, value, newNode = false) {
-    const needCalNode =
-      newNode ||
-      ['label', 'description'].some(key => {
-        return value[key] !== undefined && value[key] !== oldValue[key];
-      });
-    const result = Object.assign(oldValue, value);
-    if (needCalNode) {
-      calNodeSize(result);
-    }
-    return result;
   }
 };

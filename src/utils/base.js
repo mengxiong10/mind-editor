@@ -6,10 +6,6 @@ export function guid() {
     return v.toString(16);
   });
 }
-// let id = 1;
-// export function guid() {
-//   return String(id++);
-// }
 
 export function traverseTree(fn, data, parent, i) {
   if (fn(data, parent, i) === false) {
