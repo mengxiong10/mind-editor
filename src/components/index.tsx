@@ -169,7 +169,8 @@ function TreeEditor(props: TreeEditorProps) {
       style={{
         position: 'relative',
         height: '100%',
-        width: '100%'
+        width: '100%',
+        overflow: 'hidden'
       }}
     >
       <OverlayMenu

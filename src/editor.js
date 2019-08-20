@@ -102,6 +102,8 @@ export class Editor extends G6.TreeGraph {
     this.clipboardData = null;
     this.read(this.parseData(data || defaultData));
     this.moveToCenter();
+    // 加入到extendEvents, destroy 的时候 就会 remove
+    this.get('eventController').extendEvents.push(this._bindForceEvent());
     if (process.env.NODE_ENV === 'development') {
       window.tree = this;
     }
@@ -194,6 +196,26 @@ export class Editor extends G6.TreeGraph {
       result.children = result.children.map(v => this._cloneNode(v, result.id));
     }
     return result;
+  }
+
+  _bindForceEvent() {
+    let timer;
+    const windowForceResizeEvent = () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+      timer = setTimeout(() => {
+        this.forceFit();
+      }, 200);
+    };
+    return G6.Util.addEventListener(window, 'resize', windowForceResizeEvent);
+  }
+
+  forceFit() {
+    const container = this.get('container');
+    const width = container.offsetWidth;
+    const height = container.offsetHeight;
+    this.changeSize(width, height);
   }
 
   moveToCenter() {
