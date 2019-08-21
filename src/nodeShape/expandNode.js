@@ -1,34 +1,6 @@
 import { nodeStyle, textStyle, expandNodeBox } from '../style';
 import { statusStyleOptions } from '../option';
 
-export const statusOptions = [
-  { name: '未测', type: 'notest', value: 0, style: nodeStyle.default },
-  {
-    name: '通过',
-    type: 'success',
-    value: 1,
-    style: { fill: '#dcf3d0', stroke: '#53c400' }
-  },
-  {
-    name: '失败',
-    type: 'fail',
-    value: 2,
-    style: { fill: 'rgba(220,104,83,0.2)', stroke: 'rgba(246,155,155,1)' }
-  },
-  {
-    name: '受阻',
-    type: 'block',
-    value: 3,
-    style: { fill: 'rgba(172,172,172,0.2)', stroke: 'rgba(185,185,185,1)' }
-  },
-  {
-    name: '重测',
-    type: 'retest',
-    value: 4,
-    style: { fill: 'rgba(255,182,77,0.2)', stroke: 'rgba(255,182,77,1)' }
-  }
-];
-
 const getRectStyle = (status = 0) => {
   return statusStyleOptions[status] || nodeStyle.default;
 };
