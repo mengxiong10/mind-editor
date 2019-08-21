@@ -33,7 +33,8 @@ export const baseNodeModule = {
     const needCalNode = this.getChangeSizeKeys().some(key => {
       return value[key] !== undefined && value[key] !== oldValue[key];
     });
-    const size = needCalNode ? this.calNodeSize(value) : {};
-    return Object.assign(oldValue, value, size);
+    Object.assign(oldValue, value);
+    const size = needCalNode ? this.calNodeSize(oldValue) : {};
+    return Object.assign(oldValue, size);
   }
 };
