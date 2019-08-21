@@ -1,14 +1,39 @@
 import { nodeStyle } from './style';
 
 export const contextMenuItems = [
-  { name: '标记为通过', key: 'success', event: 'rc-mark', value: 1 },
-  { name: '标记为不通过', key: 'fail', event: 'rc-mark', value: 2 },
-  { name: '标记为受阻', key: 'block', event: 'rc-mark', value: 3 },
-  { name: '标记为重测', key: 'retest', event: 'rc-mark', value: 4 },
+  {
+    name: '标记为通过',
+    key: 'success',
+    handler: 'updateNode',
+    arguments: { status: 1 }
+  },
+  {
+    name: '标记为不通过',
+    key: 'fail',
+    handler: 'updateNode',
+    arguments: { status: 2 }
+  },
+  {
+    name: '标记为受阻',
+    key: 'block',
+    handler: 'updateNode',
+    arguments: { status: 3 }
+  },
+  {
+    name: '标记为重测',
+    key: 'retest',
+    handler: 'updateNode',
+    arguments: { status: 4 }
+  },
   { type: 'Divider', key: 'divider' },
-  { name: '新增条件', key: 'add-node', event: 'rc-add-node' },
-  { name: '新增结果', key: 'add-result-node', event: 'rc-add-result-node' },
-  { name: '删除节点', key: 'delete-node', event: 'rc-delete-node' }
+  { name: '新增条件', key: 'add-node', handler: 'addNode' },
+  {
+    name: '新增结果',
+    key: 'add-result-node',
+    handler: 'addNode',
+    arguments: 'result-node'
+  },
+  { name: '删除节点', key: 'delete-node', handler: 'deleteNode' }
 ];
 
 export const statusStyleOptions = [
@@ -24,8 +49,8 @@ export const levelOptions = ['无', '低', '中', '高'];
 export const levelMenuItems = levelOptions.map((v, i) => ({
   name: v,
   key: i,
-  value: i,
-  event: 'rc-update-level'
+  arguments: { level: i },
+  handler: 'updateNode'
 }));
 
 export const menuItemsMap = {

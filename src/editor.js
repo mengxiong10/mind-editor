@@ -98,7 +98,7 @@ export class Editor extends G6.TreeGraph {
     // 加入到extendEvents, destroy 的时候 就会 remove
     this.get('eventController').extendEvents.push(this._bindForceEvent());
     if (process.env.NODE_ENV === 'development') {
-      window.tree = this;
+      window.treeEditor = this;
     }
   }
 
