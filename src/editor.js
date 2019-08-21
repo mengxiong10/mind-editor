@@ -119,14 +119,17 @@ export class Editor extends G6.TreeGraph {
     this.currentId = id;
   }
 
-  addChildWithValidate(data, parent) {
-    const parentData = this.findDataById(parent);
+  shouldAddChild(data, parentData) {
     const parentModule = getNodeModule(parentData.shape);
     const dataModule = getNodeModule(data.shape);
-    if (
-      !parentModule.shouldAddChild(data) ||
-      !dataModule.shouldBeInsert(parentData)
-    ) {
+    return (
+      parentModule.shouldAddChild(data) && dataModule.shouldBeInsert(parentData)
+    );
+  }
+
+  addChildWithValidate(data, parent) {
+    const parentData = this.findDataById(parent);
+    if (!this.shouldAddChild(data, parentData)) {
       return;
     }
     if (!parentData.children) {

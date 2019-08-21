@@ -1,7 +1,6 @@
 import { delegateStyle } from '../style';
 import { traverseTree, guid } from '../utils/base';
 import { placeholderNodeName } from '../nodeShape/placeholderNode';
-// import { getNodeModule } from '../nodeModules';
 
 module.exports = {
   getDefaultCfg() {
@@ -34,7 +33,7 @@ module.exports = {
     const index = siblings.findIndex(v => v.id === model.id);
     siblings.splice(index, 1);
     graph.changeData();
-    this._createHotAreas(model);
+    this._createHotAreas2(model);
     this.target = { ...model, index };
   },
   onDrag(evt) {
@@ -79,43 +78,48 @@ module.exports = {
       );
     });
   },
-  _createHotAreas(model) {
+  _createHotAreas2(model) {
     const graph = this.graph;
     const root = graph.save();
     const hotAreas = [];
     const hotWidth = 100;
-    const hgap = 40;
-    traverseTree((current, parent, index) => {
-      if (!parent) {
+    traverseTree(current => {
+      if (!graph.shouldAddChild(model, current)) {
         return;
       }
+      const children = current.children || [];
       const { x, y, width, height } = current;
-      if (!current.children || current.children.length === 0) {
+      const parent = current.id;
+      if (children.length === 0) {
         const minX = x + width;
         const maxX = minX + hotWidth;
         const minY = y;
         const maxY = y + height;
-        hotAreas.push({ minX, maxX, minY, maxY, parent: current.id, index: 0 });
-      }
-      if (index === 0) {
+        hotAreas.push({ minX, maxX, minY, maxY, parent, index: 0 });
+      } else {
+        let lastY = children[0].y - 20;
+        children.forEach((child, index) => {
+          const minX = child.x - 20;
+          const maxX = child.x + hotWidth;
+          const minY = lastY;
+          const maxY = child.y + child.height / 2;
+          lastY = maxY;
+          hotAreas.push({ minX, maxX, minY, maxY, parent, index });
+        });
+        const lastChild = children[children.length - 1];
+        const minX = lastChild.x - 20;
+        const maxX = lastChild.x + hotWidth;
+        const minY = lastY;
+        const maxY = lastY + lastChild.height / 2 + 20;
         hotAreas.push({
-          minX: x - hgap,
-          maxX: x + hotWidth,
-          minY: y - 20,
-          maxY: y + height / 2,
-          parent: current.parent,
-          index
+          minX,
+          maxX,
+          minY,
+          maxY,
+          parent,
+          index: children.length
         });
       }
-      const next = parent.children[index + 1];
-      hotAreas.push({
-        parent: current.parent,
-        index: index + 1,
-        minX: x - hgap,
-        maxX: x + hotWidth,
-        minY: y + height / 2,
-        maxY: next ? next.y + next.height / 2 : y + height + 20
-      });
     }, root);
     this.hotAreas = hotAreas;
   },
