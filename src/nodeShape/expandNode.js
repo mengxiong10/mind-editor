@@ -1,4 +1,5 @@
-import { nodeStyle, textStyle, expandNodeBox } from '../options';
+import { nodeStyle, textStyle, expandNodeBox } from '../style';
+import { statusStyleOptions } from '../option';
 
 export const statusOptions = [
   { name: '未测', type: 'notest', value: 0, style: nodeStyle.default },
@@ -29,9 +30,7 @@ export const statusOptions = [
 ];
 
 const getRectStyle = (status = 0) => {
-  return statusOptions[status]
-    ? statusOptions[status].style
-    : nodeStyle.default;
+  return statusStyleOptions[status] || nodeStyle.default;
 };
 
 export const expandNodeName = 'expand-node';

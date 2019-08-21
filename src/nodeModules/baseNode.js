@@ -2,6 +2,15 @@ import { guid } from '../utils/base';
 
 export const baseNodeModule = {
   name: 'default',
+  // child
+  shouldBeInsert() {
+    return true;
+  },
+
+  // parent
+  shouldAddChild() {
+    return true;
+  },
 
   getChangeSizeKeys() {
     return [];

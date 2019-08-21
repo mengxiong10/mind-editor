@@ -1,38 +1,12 @@
 /* eslint-disable import/no-unresolved */
-import React, {
-  useRef,
-  useEffect,
-  useCallback,
-  useReducer,
-  Reducer
-} from 'react';
+import React, { useRef, useEffect, useCallback, useReducer } from 'react';
 import 'antd/dist/antd.css';
-import OverlayInput from './OverlayInput';
-import OverlayMenu, { OverlayMenuProps } from './OverlayMenu';
-import { Editor } from '../editor';
-import { menuItemsMap } from './options';
+import OverlayInput from './components/OverlayInput';
+import OverlayMenu from './components/OverlayMenu';
+import { Editor } from './editor';
+import { menuItemsMap } from './option';
 
-interface TreeEditorProps {}
-
-interface ReducerAction<S> {
-  type: 'show' | 'hide';
-  payload?: Partial<S>;
-}
-
-interface InputState {
-  visible: boolean;
-  value: string;
-  style: React.CSSProperties;
-}
-
-interface MenuState {
-  visible: boolean;
-  style: React.CSSProperties;
-  placement: OverlayMenuProps['placement'];
-  type: keyof typeof menuItemsMap;
-}
-
-function reducer<S>(state: S, action: ReducerAction<S>) {
+function reducer(state, action) {
   switch (action.type) {
     case 'show':
       return { ...state, visible: true, ...action.payload };
@@ -43,38 +17,30 @@ function reducer<S>(state: S, action: ReducerAction<S>) {
   }
 }
 
-type VisibleReducer<S> = Reducer<S, ReducerAction<S>>;
-
-function TreeEditor(props: TreeEditorProps) {
-  const editorContainerRef = useRef<HTMLDivElement>(null);
-  const editorRef = useRef<any>(null);
-  const tempRef = useRef<any>({});
-  const [inputState, dispatchInput] = useReducer<VisibleReducer<InputState>>(
-    reducer,
-    {
-      visible: false,
-      value: '',
-      style: {
-        top: 0,
-        left: 0,
-        width: 0,
-        height: 0
-      }
+function TreeEditor(props) {
+  const editorContainerRef = useRef(null);
+  const editorRef = useRef(null);
+  const tempRef = useRef({});
+  const [inputState, dispatchInput] = useReducer(reducer, {
+    visible: false,
+    value: '',
+    style: {
+      top: 0,
+      left: 0,
+      width: 0,
+      height: 0
     }
-  );
+  });
 
-  const [menuState, dispatchMenu] = useReducer<VisibleReducer<MenuState>>(
-    reducer,
-    {
-      visible: false,
-      placement: 'bottomLeft',
-      type: 'contextmenu',
-      style: {
-        top: 0,
-        left: 0
-      }
+  const [menuState, dispatchMenu] = useReducer(reducer, {
+    visible: false,
+    placement: 'bottomLeft',
+    type: 'contextmenu',
+    style: {
+      top: 0,
+      left: 0
     }
-  );
+  });
 
   const menuItems = menuItemsMap[menuState.type];
 
@@ -85,7 +51,7 @@ function TreeEditor(props: TreeEditorProps) {
   }, []);
 
   // 确定输入框
-  const handleInputConfirm = useCallback((val: string) => {
+  const handleInputConfirm = useCallback(val => {
     editorRef.current.updateNode({ [tempRef.current.inputKey]: val });
   }, []);
 
@@ -95,7 +61,7 @@ function TreeEditor(props: TreeEditorProps) {
   }, []);
 
   const handleMenuSelect = useCallback(
-    (key: string) => {
+    key => {
       const item = menuItems.find(v => String(v.key) === key);
       if (item) {
         editorRef.current.emit(item.event, item.value);
@@ -105,9 +71,9 @@ function TreeEditor(props: TreeEditorProps) {
   );
 
   useEffect(() => {
-    const editor: any = new Editor({ container: editorContainerRef.current });
+    const editor = new Editor({ container: editorContainerRef.current });
     editorRef.current = editor;
-    editor.on('ed-node-contextmenu', (evt: any) => {
+    editor.on('ed-node-contextmenu', evt => {
       dispatchMenu({
         type: 'show',
         payload: {
@@ -120,7 +86,7 @@ function TreeEditor(props: TreeEditorProps) {
         }
       });
     });
-    editor.on('ed-text-edit', (evt: any) => {
+    editor.on('ed-text-edit', evt => {
       const { width, height, zoom, x, y, value, key } = evt;
       tempRef.current.inputKey = key;
       editor.setMode('lock');
@@ -139,7 +105,7 @@ function TreeEditor(props: TreeEditorProps) {
         }
       });
     });
-    editor.on('ed-select-edit', (evt: any) => {
+    editor.on('ed-select-edit', evt => {
       dispatchMenu({
         type: 'show',
         payload: {
@@ -153,12 +119,12 @@ function TreeEditor(props: TreeEditorProps) {
       });
     });
     editor.on('rc-add-node', () => editor.addNode());
-    editor.on('rc-add-result-node', () => editor.addResultNode());
+    editor.on('rc-add-result-node', () => editor.addNode('result-node'));
     editor.on('rc-delete-node', () => editor.deleteNode());
-    editor.on('rc-update-level', (level: number) => {
+    editor.on('rc-update-level', level => {
       editor.updateNode({ level });
     });
-    editor.on('rc-mark', (status: number) => {
+    editor.on('rc-mark', status => {
       editor.updateNode({ status });
     });
   }, []);

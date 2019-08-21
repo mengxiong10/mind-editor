@@ -1,4 +1,4 @@
-import { placeholderNodeStyle } from '../options';
+import { placeholderNodeStyle } from '../style';
 
 export const placeholderNodeName = 'placeholder-node';
 

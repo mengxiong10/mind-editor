@@ -1,5 +1,5 @@
 import { Util } from '@antv/g6';
-import { resultNodeBox } from '../options';
+import { resultNodeBox } from '../style';
 
 export default {
   getEvents() {

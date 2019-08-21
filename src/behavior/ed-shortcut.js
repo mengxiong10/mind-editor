@@ -25,7 +25,8 @@ export default {
     if (item && item.handler) {
       if (typeof item.handler === 'string' && graph[item.handler]) {
         evt.preventDefault();
-        graph[item.handler].call(graph);
+        const args = [].concat(item.arguments);
+        graph[item.handler](...args);
       } else if (typeof item.handler === 'function') {
         evt.preventDefault();
         item.handler.call(graph);

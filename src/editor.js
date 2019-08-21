@@ -1,8 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import G6 from '@antv/g6/src/index';
 import Hierarchy from '@antv/hierarchy';
-import { edgeStyle } from './options';
-import { levelOptions } from './nodeShape/resultNode';
+import { edgeStyle } from './style';
 import { getNodeModule } from './nodeModules';
 import { guid } from './utils/base';
 import { registerCustomNode } from './nodeShape';
@@ -70,7 +69,11 @@ export class Editor extends G6.TreeGraph {
             shortcuts: [
               { keyCode: [45, 9], handler: 'addNode' }, // insert tab
               { keyCode: 46, handler: 'deleteNode' }, // delete
-              { keyCode: 35, handler: 'addResultNode' }, // end
+              {
+                keyCode: 35,
+                handler: 'addNode',
+                arguments: 'result-node'
+              }, // end
               { keyCode: 32, handler: 'moveToCenter' }, // space
               { keyCode: 67, ctrlKey: true, handler: 'cloneNode' }, // ctrl + c
               { keyCode: 86, ctrlKey: true, handler: 'pasteNode' } // ctrl + v
@@ -89,7 +92,7 @@ export class Editor extends G6.TreeGraph {
       }
     });
     this.currentId = null;
-    this.clipboardData = null;
+    this.clipboardId = null;
     this.read(this.parseData(data || defaultData));
     this.moveToCenter();
     // 加入到extendEvents, destroy 的时候 就会 remove
@@ -116,22 +119,29 @@ export class Editor extends G6.TreeGraph {
     this.currentId = id;
   }
 
-  addNode(label = '条件分支') {
-    if (this.currentId) {
-      const data = getNodeModule('expand-node').create({
-        parent: this.currentId,
-        label
-      });
-      this.addChild(data, this.currentId);
+  addChildWithValidate(data, parent) {
+    const parentData = this.findDataById(parent);
+    const parentModule = getNodeModule(parentData.shape);
+    const dataModule = getNodeModule(data.shape);
+    if (
+      !parentModule.shouldAddChild(data) ||
+      !dataModule.shouldBeInsert(parentData)
+    ) {
+      return;
     }
+    if (!parentData.children) {
+      parentData.children = [];
+    }
+    parentData.children.push(data);
+    this.changeData();
   }
 
-  addResultNode() {
+  addNode(shape = 'expand-node') {
     if (this.currentId) {
-      const data = getNodeModule('expand-node').create({
+      const data = getNodeModule(shape).create({
         parent: this.currentId
       });
-      this.addChild(data, this.currentId);
+      this.addChildWithValidate(data, this.currentId);
     }
   }
 
@@ -165,16 +175,16 @@ export class Editor extends G6.TreeGraph {
 
   cloneNode() {
     if (this.currentId) {
-      this.clipboardData = this.currentId;
+      this.clipboardId = this.currentId;
     }
   }
 
   pasteNode() {
-    if (this.currentId && this.clipboardData) {
-      const currentModel = this.findDataById(this.clipboardData);
+    if (this.currentId && this.clipboardId) {
+      const currentModel = this.findDataById(this.clipboardId);
       if (currentModel) {
         const data = this._cloneNode(currentModel, this.currentId);
-        this.addChild(data, this.currentId);
+        this.addChildWithValidate(data, this.currentId);
       }
     }
   }
@@ -225,5 +235,3 @@ export class Editor extends G6.TreeGraph {
     tree.translate(viewCenter.x - groupCenter.x, viewCenter.y - groupCenter.y);
   }
 }
-
-export { levelOptions };

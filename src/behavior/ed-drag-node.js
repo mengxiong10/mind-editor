@@ -1,6 +1,7 @@
-import { delegateStyle } from '../options';
+import { delegateStyle } from '../style';
 import { traverseTree, guid } from '../utils/base';
 import { placeholderNodeName } from '../nodeShape/placeholderNode';
+// import { getNodeModule } from '../nodeModules';
 
 module.exports = {
   getDefaultCfg() {
@@ -33,7 +34,7 @@ module.exports = {
     const index = siblings.findIndex(v => v.id === model.id);
     siblings.splice(index, 1);
     graph.changeData();
-    this._createHotAreas();
+    this._createHotAreas(model);
     this.target = { ...model, index };
   },
   onDrag(evt) {
@@ -78,23 +79,23 @@ module.exports = {
       );
     });
   },
-  _createHotAreas() {
+  _createHotAreas(model) {
     const graph = this.graph;
     const root = graph.save();
     const hotAreas = [];
     const hotWidth = 100;
     const hgap = 40;
-    traverseTree((child, parent, index) => {
+    traverseTree((current, parent, index) => {
       if (!parent) {
         return;
       }
-      const { x, y, width, height } = child;
-      if (!child.children || child.children.length === 0) {
+      const { x, y, width, height } = current;
+      if (!current.children || current.children.length === 0) {
         const minX = x + width;
         const maxX = minX + hotWidth;
         const minY = y;
         const maxY = y + height;
-        hotAreas.push({ minX, maxX, minY, maxY, parent: child.id, index: 0 });
+        hotAreas.push({ minX, maxX, minY, maxY, parent: current.id, index: 0 });
       }
       if (index === 0) {
         hotAreas.push({
@@ -102,13 +103,13 @@ module.exports = {
           maxX: x + hotWidth,
           minY: y - 20,
           maxY: y + height / 2,
-          parent: child.parent,
+          parent: current.parent,
           index
         });
       }
       const next = parent.children[index + 1];
       hotAreas.push({
-        parent: child.parent,
+        parent: current.parent,
         index: index + 1,
         minX: x - hgap,
         maxX: x + hotWidth,

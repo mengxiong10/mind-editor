@@ -1,10 +1,26 @@
-import { textStyle, resultNodeBox } from '../options';
+import { textStyle, resultNodeBox } from '../style';
 import { getTextBox } from '../utils/drawText';
 import { baseNodeModule } from './baseNode';
 import { resultNodeName } from '../nodeShape/resultNode';
 
 export const resultNodeModule = Object.assign({}, baseNodeModule, {
   name: resultNodeName,
+
+  shouldBeInsert(parent) {
+    if (
+      parent &&
+      parent.children &&
+      parent.children.find(v => v.shape === this.name)
+    ) {
+      return false;
+    }
+    return true;
+  },
+
+  // parent
+  shouldAddChild() {
+    return false;
+  },
 
   getDefaultData() {
     return {

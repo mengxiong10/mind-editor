@@ -1,4 +1,4 @@
-import { textStyle, expandNodeBox } from '../options';
+import { textStyle, expandNodeBox } from '../style';
 import { getTextBox } from '../utils/drawText';
 import { baseNodeModule } from './baseNode';
 import { expandNodeName } from '../nodeShape/expandNode';
@@ -9,7 +9,7 @@ export const expandNodeModule = Object.assign({}, baseNodeModule, {
   getDefaultData() {
     return {
       shape: this.name,
-      label: ''
+      label: '条件分支'
     };
   },
 

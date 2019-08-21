@@ -1,14 +1,6 @@
-import { levelOptions } from '../editor';
+import { nodeStyle } from './style';
 
-interface MenuItem {
-  name?: string;
-  key: string | number;
-  event?: string;
-  type?: 'Item' | 'Divider';
-  value?: any;
-}
-
-export const contextMenuItems: MenuItem[] = [
+export const contextMenuItems = [
   { name: '标记为通过', key: 'success', event: 'rc-mark', value: 1 },
   { name: '标记为不通过', key: 'fail', event: 'rc-mark', value: 2 },
   { name: '标记为受阻', key: 'block', event: 'rc-mark', value: 3 },
@@ -19,14 +11,22 @@ export const contextMenuItems: MenuItem[] = [
   { name: '删除节点', key: 'delete-node', event: 'rc-delete-node' }
 ];
 
-export const levelMenuItems: MenuItem[] = levelOptions.map(
-  (v: string, i: number) => ({
-    name: v,
-    key: i,
-    value: i,
-    event: 'rc-update-level'
-  })
-);
+export const statusStyleOptions = [
+  nodeStyle.default,
+  { fill: '#dcf3d0', stroke: '#53c400' },
+  { fill: 'rgba(220,104,83,0.2)', stroke: 'rgba(246,155,155,1)' },
+  { fill: 'rgba(172,172,172,0.2)', stroke: 'rgba(185,185,185,1)' },
+  { fill: 'rgba(255,182,77,0.2)', stroke: 'rgba(255,182,77,1)' }
+];
+
+export const levelOptions = ['无', '低', '中', '高'];
+
+export const levelMenuItems = levelOptions.map((v, i) => ({
+  name: v,
+  key: i,
+  value: i,
+  event: 'rc-update-level'
+}));
 
 export const menuItemsMap = {
   level: levelMenuItems,
