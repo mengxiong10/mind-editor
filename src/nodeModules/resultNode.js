@@ -6,7 +6,7 @@ import { resultNodeName } from '../nodeShape/resultNode';
 export const resultNodeModule = Object.assign({}, baseNodeModule, {
   name: resultNodeName,
 
-  shouldBeInsert(parent) {
+  shouldBeAppend(parent) {
     if (
       parent &&
       parent.children &&

@@ -3,7 +3,7 @@ import { guid } from '../utils/base';
 export const baseNodeModule = {
   name: 'default',
   // child
-  shouldBeInsert() {
+  shouldBeAppend() {
     return true;
   },
 

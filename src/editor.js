@@ -123,7 +123,7 @@ export class Editor extends G6.TreeGraph {
     const parentModule = getNodeModule(parentData.shape);
     const dataModule = getNodeModule(data.shape);
     return (
-      parentModule.shouldAddChild(data) && dataModule.shouldBeInsert(parentData)
+      parentModule.shouldAddChild(data) && dataModule.shouldBeAppend(parentData)
     );
   }
 

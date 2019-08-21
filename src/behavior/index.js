@@ -1,9 +1,9 @@
-import edContextmenu from './ed-contextmenu';
-import edClickSelect from './ed-click-select';
-import edEdit from './ed-edit';
-import edResultEdit from './ed-result-edit';
-import edShortcut from './ed-shortcut';
-import edDragNode from './ed-drag-node';
+import edContextmenu from './edContextmenu';
+import edClickSelect from './edClickSelect';
+import edEdit from './edEdit';
+import edResultEdit from './edResultEdit';
+import edShortcut from './edShortcut';
+import edDragNode from './edDragNode';
 
 export function registerCustomBehavior(G6) {
   G6.registerBehavior('ed-contextmenu', edContextmenu);
