@@ -1,20 +1,28 @@
 {
   "name": "tree-editor",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "mind editor",
+  "main": "lib/index.js",
+  "module": "lib/index.es.js",
   "scripts": {
-    "dev": "parcel index.html --open"
+    "dev": "parcel index.html --open",
+    "build": "rollup -c"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "mind",
+    "editor",
+    "react"
+  ],
+  "author": "xiemengxiong",
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/plugin-proposal-class-properties": "^7.3.4",
     "@babel/plugin-proposal-decorators": "^7.4.4",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/preset-env": "^7.3.4",
     "@babel/preset-react": "^7.0.0",
+    "@babel/preset-typescript": "^7.3.3",
     "@types/react": "^16.8.25",
     "@types/react-dom": "^16.8.5",
     "@typescript-eslint/eslint-plugin": "^1.13.0",
@@ -29,6 +37,14 @@
     "eslint-plugin-react": "^7.12.4",
     "eslint-plugin-react-hooks": "^1.6.0",
     "parcel-bundler": "^1.12.2",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "react-hot-loader": "^4.12.11",
+    "rollup": "^0.67.3",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-commonjs": "^9.2.0",
+    "rollup-plugin-node-resolve": "^3.4.0",
+    "rollup-plugin-typescript2": "^0.18.0",
     "sass": "^1.17.3",
     "typescript": "^3.5.3"
   },
@@ -36,8 +52,6 @@
     "@antv/g6": "^3.0.4",
     "@antv/hierarchy": "^0.4.0",
     "antd": "^3.21.2",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
     "utility-types": "^3.7.0"
   }
 }

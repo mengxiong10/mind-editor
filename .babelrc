@@ -6,7 +6,17 @@
         "modules": false,
         "useBuiltIns": "usage"
       }
-    ]
+    ],
+    // "@babel/preset-typescript",
+    "@babel/preset-react"
   ],
-  "plugins": [["@babel/plugin-proposal-class-properties", { "loose": true }]]
+  "plugins": [
+    ["@babel/plugin-syntax-dynamic-import"],
+    ["@babel/plugin-proposal-decorators", { "legacy": true }],
+    ["@babel/plugin-proposal-class-properties", { "loose": true }],
+    [
+      "import",
+      { "libraryName": "antd", "libraryDirectory": "es", "style": "css" }
+    ]
+  ]
 }

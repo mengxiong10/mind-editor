@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import 'antd/dist/antd.css';
 import OverlayInput from './components/OverlayInput';
 import OverlayMenu from './components/OverlayMenu';
 import { Editor } from './editor';

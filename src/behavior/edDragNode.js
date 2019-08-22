@@ -2,7 +2,7 @@ import { delegateStyle } from '../style';
 import { traverseTree, guid } from '../utils/base';
 import { placeholderNodeName } from '../nodeShape/placeholderNode';
 
-module.exports = {
+export default {
   getDefaultCfg() {
     return {
       delegateStyle

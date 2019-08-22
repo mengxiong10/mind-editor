@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import { Menu } from 'antd';
-import { ClickParam } from 'antd/lib/menu';
+import Menu, { ClickParam } from 'antd/es/menu';
+import 'antd/es/menu/style/index.css';
+import 'antd/es/dropdown/style/index.css';
 import Overlay from './Overlay';
 
 export interface OverlayMenuProps {

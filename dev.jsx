@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import TreeEditor from './src/index';
+import TreeEditor from './src/TreeEditor';
 
 const treeNode = document.getElementById('tree');
 

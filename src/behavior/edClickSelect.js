@@ -1,6 +1,6 @@
 import { Util } from '@antv/g6';
 
-module.exports = {
+export default {
   getEvents() {
     return {
       'node:click': 'onClick',

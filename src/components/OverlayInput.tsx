@@ -1,5 +1,6 @@
 import React, { useState, KeyboardEvent, useRef, useEffect } from 'react';
 import TextArea from 'antd/es/input/TextArea';
+import 'antd/es/input/style/index.css';
 import Overlay from './Overlay';
 
 interface OverlayInputProps {
