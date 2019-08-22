@@ -1,9 +1,8 @@
 import { textStyle, resultNodeBox } from '../style';
 import { getTextBox } from '../utils/drawText';
-import { baseNodeModule } from './baseNode';
 import { resultNodeName } from '../nodeShape/resultNode';
 
-export const resultNodeModule = Object.assign({}, baseNodeModule, {
+export const resultNodeModule = {
   name: resultNodeName,
 
   shouldBeAppend(parent) {
@@ -63,4 +62,4 @@ export const resultNodeModule = Object.assign({}, baseNodeModule, {
       _description: textBoxs[1].value
     };
   }
-});
+};

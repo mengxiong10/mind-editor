@@ -4,7 +4,13 @@ import TreeEditor from './src/index';
 
 const treeNode = document.getElementById('tree');
 
-ReactDOM.render(<TreeEditor />, treeNode);
+const test = (
+  <TreeEditor>
+    <div>ok</div>
+  </TreeEditor>
+);
+
+ReactDOM.render(test, treeNode);
 
 if (module.hot) {
   module.hot.dispose(() => {

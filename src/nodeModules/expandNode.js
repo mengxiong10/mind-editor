@@ -1,9 +1,8 @@
 import { textStyle, expandNodeBox } from '../style';
 import { getTextBox } from '../utils/drawText';
-import { baseNodeModule } from './baseNode';
 import { expandNodeName } from '../nodeShape/expandNode';
 
-export const expandNodeModule = Object.assign({}, baseNodeModule, {
+export const expandNodeModule = {
   name: expandNodeName,
 
   getDefaultData() {
@@ -29,4 +28,4 @@ export const expandNodeModule = Object.assign({}, baseNodeModule, {
 
     return { width, height, _label: textBox.value };
   }
-});
+};

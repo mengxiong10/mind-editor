@@ -132,6 +132,7 @@ class TreeEditor extends Component {
 
   render() {
     const { menuState, inputState } = this.state;
+    // const { children } = this.props;
     return (
       <div
         ref={this.containerRef}
@@ -142,6 +143,7 @@ class TreeEditor extends Component {
           overflow: 'hidden'
         }}
       >
+        {/* {children} */}
         <OverlayMenu
           {...menuState}
           onSelect={this.handleMenuSelect}

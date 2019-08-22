@@ -11,7 +11,7 @@ export const addNodeModule = obj => {
     console.warn('nodeModule need a name');
     return;
   }
-  nodeModules[obj.name] = obj;
+  nodeModules[obj.name] = { ...baseNodeModule, ...obj };
 };
 
 // 获取节点的操作
@@ -19,6 +19,5 @@ export const getNodeModule = name => {
   return nodeModules[name] || baseNodeModule;
 };
 
-addNodeModule(baseNodeModule);
 addNodeModule(expandNodeModule);
 addNodeModule(resultNodeModule);
