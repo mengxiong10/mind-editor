@@ -1,4 +1,4 @@
-import { placeholderNodeStyle } from '../style';
+import { placeholderNodeStyle } from '../editor/style';
 
 export const placeholderNodeName = 'placeholder-node';
 

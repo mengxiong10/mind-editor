@@ -4,17 +4,20 @@ import 'antd/es/menu/style/index.css';
 import 'antd/es/dropdown/style/index.css';
 import Overlay from './Overlay';
 
+export interface OverlayMenuItem {
+  key: string | number;
+  name?: string;
+  type?: 'Item' | 'Divider';
+  handler?: (editor?: any) => void;
+}
+
 export interface OverlayMenuProps {
   placement?: 'bottomLeft' | 'bottomRight';
   visible: boolean;
   style: React.CSSProperties;
   onClose: () => void;
   onSelect: (key: string) => void;
-  items: {
-    key: string | number;
-    name?: string;
-    type?: 'Item' | 'Divider';
-  }[];
+  items: OverlayMenuItem[];
 }
 
 function OverlayMenu(props: OverlayMenuProps) {

@@ -1,4 +1,4 @@
-import { textStyle, resultNodeBox } from '../style';
+import { textStyle, resultNodeBox } from '../editor/style';
 import { getTextBox } from '../utils/drawText';
 import { resultNodeName } from '../nodeShape/resultNode';
 

@@ -60,3 +60,11 @@ export const delegateStyle = {
   lineDash: [4, 4],
   radius: 4
 };
+
+export const statusStyleOptions = [
+  nodeStyle.default,
+  { fill: '#dcf3d0', stroke: '#53c400' },
+  { fill: 'rgba(220,104,83,0.2)', stroke: 'rgba(246,155,155,1)' },
+  { fill: 'rgba(172,172,172,0.2)', stroke: 'rgba(185,185,185,1)' },
+  { fill: 'rgba(255,182,77,0.2)', stroke: 'rgba(255,182,77,1)' }
+];

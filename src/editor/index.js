@@ -2,10 +2,10 @@
 import G6 from '@antv/g6/src/index';
 import Hierarchy from '@antv/hierarchy';
 import { edgeStyle } from './style';
-import { getNodeModule } from './nodeModules';
-import { guid } from './utils/base';
-import { registerCustomNode } from './nodeShape';
-import { registerCustomBehavior } from './behavior';
+import { getNodeModule } from '../nodeModules';
+import { guid } from '../utils/base';
+import { registerCustomNode } from '../nodeShape';
+import { registerCustomBehavior } from '../behavior';
 
 registerCustomNode(G6);
 registerCustomBehavior(G6);
@@ -14,7 +14,7 @@ const defaultData = {
   label: '我是根节点'
 };
 
-export class Editor extends G6.TreeGraph {
+class Editor extends G6.TreeGraph {
   constructor({ container, data }) {
     super({
       container,
@@ -69,11 +69,11 @@ export class Editor extends G6.TreeGraph {
             shortcuts: [
               { keyCode: [45, 9], handler: 'addNode' }, // insert tab
               { keyCode: 46, handler: 'deleteNode' }, // delete
-              {
-                keyCode: 35,
-                handler: 'addNode',
-                arguments: 'result-node'
-              }, // end
+              // {
+              //   keyCode: 35,
+              //   handler: 'addNode',
+              //   arguments: 'result-node'
+              // }, // end
               { keyCode: 32, handler: 'moveToCenter' }, // space
               { keyCode: 67, ctrlKey: true, handler: 'cloneNode' }, // ctrl + c
               { keyCode: 86, ctrlKey: true, handler: 'pasteNode' } // ctrl + v
@@ -116,7 +116,26 @@ export class Editor extends G6.TreeGraph {
   }
 
   setCurrent(id) {
+    if (this.currentId === id) {
+      return;
+    }
+    const autoPaint = this.get('autoPaint');
+    this.setAutoPaint(false);
+    if (this.currentId) {
+      const oldItem = this.findById(this.currentId);
+      if (oldItem) {
+        this.setItemState(oldItem, 'selected', false);
+      }
+    }
+    if (id) {
+      const item = this.findById(id);
+      if (item) {
+        this.setItemState(item, 'selected', true);
+      }
+    }
     this.currentId = id;
+    this.setAutoPaint(autoPaint);
+    this.paint();
   }
 
   shouldAddChild(data, parentData) {
@@ -130,13 +149,14 @@ export class Editor extends G6.TreeGraph {
   addChildWithValidate(data, parent) {
     const parentData = this.findDataById(parent);
     if (!this.shouldAddChild(data, parentData)) {
-      return;
+      return false;
     }
     if (!parentData.children) {
       parentData.children = [];
     }
     parentData.children.push(data);
     this.changeData();
+    return true;
   }
 
   addNode(shape = 'expand-node') {
@@ -144,7 +164,11 @@ export class Editor extends G6.TreeGraph {
       const data = getNodeModule(shape).create({
         parent: this.currentId
       });
-      this.addChildWithValidate(data, this.currentId);
+      const success = this.addChildWithValidate(data, this.currentId);
+      if (success) {
+        this.setCurrent(data.id);
+        this.editNode();
+      }
     }
   }
 
@@ -174,6 +198,22 @@ export class Editor extends G6.TreeGraph {
         }
       }
     }
+  }
+
+  editNode(item) {
+    item = item || this.findById(this.currentId);
+    const model = item.getModel();
+    const { x, y } = this.getCanvasByPoint(model.x, model.y);
+    const zoom = this.getZoom();
+    this.emit('ed-text-edit', {
+      x,
+      y,
+      zoom,
+      width: model.width,
+      height: model.height,
+      key: 'label',
+      value: model.label
+    });
   }
 
   cloneNode() {
@@ -238,3 +278,5 @@ export class Editor extends G6.TreeGraph {
     tree.translate(viewCenter.x - groupCenter.x, viewCenter.y - groupCenter.y);
   }
 }
+
+export default Editor;

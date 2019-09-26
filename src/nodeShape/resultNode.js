@@ -1,5 +1,6 @@
-import { textStyle, nodeStyle, resultNodeBox } from '../style';
-import { levelOptions } from '../option';
+import { textStyle, nodeStyle, resultNodeBox } from '../editor/style';
+
+const levelOptions = ['无', '低', '中', '高'];
 
 export const resultNodeName = 'result-node';
 

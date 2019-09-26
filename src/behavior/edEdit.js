@@ -11,18 +11,6 @@ export default {
       return;
     }
     const graph = this.graph;
-    const box = item.getBBox();
-    const model = item.getModel();
-    const { x, y } = graph.getCanvasByPoint(box.x, box.y);
-    const zoom = graph.getZoom();
-    graph.emit('ed-text-edit', {
-      x,
-      y,
-      zoom,
-      width: box.width,
-      height: box.height,
-      key: 'label',
-      value: model.label
-    });
+    graph.editNode(item);
   }
 };

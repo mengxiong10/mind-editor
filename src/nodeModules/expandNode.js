@@ -1,4 +1,4 @@
-import { textStyle, expandNodeBox } from '../style';
+import { textStyle, expandNodeBox } from '../editor/style';
 import { getTextBox } from '../utils/drawText';
 import { expandNodeName } from '../nodeShape/expandNode';
 

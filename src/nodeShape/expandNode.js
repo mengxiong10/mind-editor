@@ -1,5 +1,9 @@
-import { nodeStyle, textStyle, expandNodeBox } from '../style';
-import { statusStyleOptions } from '../option';
+import {
+  nodeStyle,
+  textStyle,
+  expandNodeBox,
+  statusStyleOptions
+} from '../editor/style';
 
 const getRectStyle = (status = 0) => {
   return statusStyleOptions[status] || nodeStyle.default;
