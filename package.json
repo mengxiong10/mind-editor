@@ -1,12 +1,22 @@
 {
   "name": "tree-editor",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "mind editor",
   "main": "lib/index.js",
   "module": "lib/index.es.js",
+  "typings": "lib/index.d.ts",
   "scripts": {
     "dev": "parcel index.html --open",
     "build": "rollup -c"
+  },
+  "files": [
+    "src",
+    "lib",
+    "typings"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+http://wh-git.mingyuanyun.com/xiemx/tree-editor.git"
   },
   "keywords": [
     "mind",

@@ -7,7 +7,7 @@ import pkg from './package.json';
 
 const external = id => !id.startsWith('.') && !id.startsWith('/');
 
-const input = 'src/index.js';
+const input = 'src/index.ts';
 
 const buildEs = {
   input,
