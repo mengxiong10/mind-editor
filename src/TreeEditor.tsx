@@ -18,10 +18,6 @@ function TreeEditor() {
     };
   }, []);
 
-  const handleClick = () => {
-    const data = editor.save();
-  };
-
   return (
     <div
       ref={containerRef}
@@ -32,13 +28,6 @@ function TreeEditor() {
         overflow: 'hidden'
       }}
     >
-      <button
-        type="button"
-        style={{ position: 'absolute' }}
-        onClick={handleClick}
-      >
-        保存
-      </button>
       <Provider value={editor}>
         {editor && (
           <>
