@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import G6 from '@antv/g6/src/index';
+import G6 from '@antv/g6';
 import Hierarchy from '@antv/hierarchy';
 import { edgeStyle } from './style';
 import { getNodeModule } from '../nodeModules';
