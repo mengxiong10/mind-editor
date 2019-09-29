@@ -4,7 +4,11 @@ import EditorContext from './EditorContext';
 
 let inputKey: string;
 
-function EditorInput() {
+interface EditorInputProps {
+  onConfirm?: (val: string) => void;
+}
+
+function EditorInput({ onConfirm }: EditorInputProps) {
   const editor = useContext(EditorContext);
 
   const [visible, setVisible] = useState(false);
@@ -13,6 +17,9 @@ function EditorInput() {
 
   const handleInputConfirm = (val: string) => {
     editor.updateNode({ [inputKey]: val });
+    if (onConfirm) {
+      onConfirm(val);
+    }
   };
 
   useEffect(() => {

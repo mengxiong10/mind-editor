@@ -181,8 +181,9 @@ class Editor extends G6.TreeGraph {
   }
 
   updateNode(obj) {
-    if (this.currentId) {
-      const currentModel = this.findDataById(this.currentId);
+    const id = obj.id || this.currentId;
+    if (id) {
+      const currentModel = this.findDataById(id);
       if (currentModel) {
         const oldWidth = currentModel.width;
         const oldHeight = currentModel.height;
@@ -194,8 +195,10 @@ class Editor extends G6.TreeGraph {
         if (width !== oldWidth || height !== oldHeight) {
           this.changeData();
         } else {
-          this.update(this.currentId, newModel);
+          this.update(id, newModel);
         }
+        console.log(newModel);
+        this.emit('after-update-node', newModel);
       }
     }
   }
