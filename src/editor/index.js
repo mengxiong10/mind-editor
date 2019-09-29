@@ -197,7 +197,6 @@ class Editor extends G6.TreeGraph {
         } else {
           this.update(id, newModel);
         }
-        console.log(newModel);
         this.emit('after-update-node', newModel);
       }
     }
