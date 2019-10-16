@@ -47,12 +47,12 @@ export const registerExpandNode = {
     if (children && children.length) {
       const cr = 7;
       const crPadding = 3;
-      const collapseIcon = [
+      const expandIcon = [
         ['M', width + crPadding, height / 2],
         ['h', (cr - crPadding) * 2]
       ];
-      const expandIcon = [
-        ...collapseIcon,
+      const collapseIcon = [
+        ...expandIcon,
         ['M', width + cr, crPadding - cr + height / 2],
         ['v', (cr - crPadding) * 2]
       ];
