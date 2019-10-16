@@ -10,6 +10,7 @@ export default {
     const graph = self.graph;
     graph.setCurrent(item.get('id'));
     graph.emit('ed-node-contextmenu', {
+      graph,
       target: item,
       x: e.canvasX,
       y: e.canvasY

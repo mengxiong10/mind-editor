@@ -1,37 +1,41 @@
 import React, { useState, useEffect, useContext } from 'react';
 import OverlayMenu, { OverlayMenuItem } from './components/OverlayMenu';
 import EditorContext from './EditorContext';
-import { contextMenuItems } from './contextMenuItems';
+import { getContextMenuItems } from './contextMenuItems';
 
 interface ContextMenuProps {
-  items?: OverlayMenuItem[];
   placement?: 'bottomLeft' | 'bottomRight';
-  event?: string;
 }
 
-function ContextMenu({
-  placement = 'bottomLeft',
-  event = 'ed-node-contextmenu',
-  items = contextMenuItems
-}: ContextMenuProps) {
+function ContextMenu({ placement = 'bottomLeft' }: ContextMenuProps) {
   const editor = useContext(EditorContext);
 
   const [visible, setVisible] = useState(false);
   const [style, setStyle] = useState({});
+  const [items, setItems] = useState<OverlayMenuItem[]>([]);
 
   const handleMenuSelect = (key: string) => {
     const item = items.find(v => String(v.key) === key);
     if (item && typeof item.handler === 'function') {
-      item.handler(editor);
+      item.handler();
     }
   };
 
   useEffect(() => {
-    editor.on(event, (evt: any) => {
+    const currentMode = editor.getCurrentMode();
+    const nextMode = visible ? 'lock' : 'default';
+    if (currentMode !== nextMode) {
+      editor.setMode(nextMode);
+    }
+  }, [editor, visible]);
+
+  useEffect(() => {
+    editor.on('ed-node-contextmenu', (evt: any) => {
       setVisible(true);
       setStyle({ top: evt.y, left: evt.x });
+      setItems(getContextMenuItems(editor));
     });
-  }, [editor, event]);
+  }, [editor]);
 
   return (
     <OverlayMenu

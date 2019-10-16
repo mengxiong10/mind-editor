@@ -79,9 +79,7 @@ class Editor extends G6.TreeGraph {
               { keyCode: 86, ctrlKey: true, handler: 'pasteNode' } // ctrl + v
             ]
           },
-          {
-            type: 'ed-drag-node'
-          },
+          'ed-drag-node',
           'ed-contextmenu',
           'ed-edit',
           'ed-result-edit',
@@ -89,7 +87,8 @@ class Editor extends G6.TreeGraph {
           'zoom-canvas'
         ],
         lock: []
-      }
+      },
+      mode: 'default'
     });
     this.currentId = null;
     this.clipboardId = null;
@@ -218,19 +217,35 @@ class Editor extends G6.TreeGraph {
     });
   }
 
+  couldDelete() {
+    if (!this.currentId) {
+      return false;
+    }
+    const data = this.findDataById(this.currentId);
+    return data && !!data.parent;
+  }
+
+  couldClone() {
+    return !!this.currentId;
+  }
+
+  couldPaste() {
+    return (
+      this.currentId && this.clipboardId && this.findDataById(this.clipboardId)
+    );
+  }
+
   cloneNode() {
-    if (this.currentId) {
+    if (this.couldClone()) {
       this.clipboardId = this.currentId;
     }
   }
 
   pasteNode() {
-    if (this.currentId && this.clipboardId) {
+    if (this.couldPaste()) {
       const currentModel = this.findDataById(this.clipboardId);
-      if (currentModel) {
-        const data = this._cloneNode(currentModel, this.currentId);
-        this.addChildWithValidate(data, this.currentId);
-      }
+      const data = this._cloneNode(currentModel, this.currentId);
+      this.addChildWithValidate(data, this.currentId);
     }
   }
 

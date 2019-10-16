@@ -9,6 +9,7 @@ export interface OverlayMenuItem {
   name?: string;
   type?: 'Item' | 'Divider';
   handler?: (editor?: any) => void;
+  disabled?: boolean;
 }
 
 export interface OverlayMenuProps {
@@ -72,7 +73,11 @@ function OverlayMenu(props: OverlayMenuProps) {
           if (item.type === 'Divider') {
             return <Menu.Divider key={item.key} />;
           }
-          return <Menu.Item key={item.key}>{item.name}</Menu.Item>;
+          return (
+            <Menu.Item key={item.key} disabled={!!item.disabled}>
+              {item.name}
+            </Menu.Item>
+          );
         })}
       </Menu>
     </Overlay>

@@ -23,7 +23,11 @@ function EditorInput({ onConfirm }: EditorInputProps) {
   };
 
   useEffect(() => {
-    editor.setMode(visible ? 'lock' : 'default');
+    const currentMode = editor.getCurrentMode();
+    const nextMode = visible ? 'lock' : 'default';
+    if (currentMode !== nextMode) {
+      editor.setMode(nextMode);
+    }
   }, [editor, visible]);
 
   useEffect(() => {
