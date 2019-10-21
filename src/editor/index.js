@@ -84,9 +84,10 @@ class Editor extends G6.TreeGraph {
           'ed-edit',
           'ed-result-edit',
           'drag-canvas',
-          'zoom-canvas'
+          'zoom-canvas',
+          'ed-cursor'
         ],
-        lock: []
+        lock: ['ed-cursor']
       },
       mode: 'default'
     });

@@ -4,6 +4,7 @@ import edEdit from './edEdit';
 import edResultEdit from './edResultEdit';
 import edShortcut from './edShortcut';
 import edDragNode from './edDragNode';
+import edCursor from './edCursor';
 
 export function registerCustomBehavior(G6) {
   G6.registerBehavior('ed-contextmenu', edContextmenu);
@@ -12,4 +13,5 @@ export function registerCustomBehavior(G6) {
   G6.registerBehavior('ed-result-edit', edResultEdit);
   G6.registerBehavior('ed-shortcut', edShortcut);
   G6.registerBehavior('ed-drag-node', edDragNode);
+  G6.registerBehavior('ed-cursor', edCursor);
 }

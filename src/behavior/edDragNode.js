@@ -43,10 +43,12 @@ export default {
     if (!this.get('shouldUpdate').call(this, evt)) {
       return;
     }
+    const graph = this.graph;
+    graph.emit('node-drag', evt);
     this._update(this.target, evt.x, evt.y);
   },
-  onDragEnd(e) {
-    if (!this.shouldEnd.call(this, e)) {
+  onDragEnd(evt) {
+    if (!this.shouldEnd.call(this, evt)) {
       return;
     }
     if (!this.target) {
@@ -69,6 +71,7 @@ export default {
       const siblings = graph.findDataById(model.parent).children;
       siblings.splice(model.index, 0, model);
     }
+    graph.emit('node-dragend', evt);
     graph.changeData();
   },
   _findHotArea(x, y) {

@@ -61,6 +61,7 @@ export const registerExpandNode = {
           x: width + cr,
           y: height / 2,
           r: cr,
+          cursor: 'pointer',
           ...nodeStyle.default
         },
         className: 'collapse-icon'
@@ -69,7 +70,8 @@ export const registerExpandNode = {
         attrs: {
           lineWidth: 2,
           path: collapsed ? collapseIcon : expandIcon,
-          stroke: nodeStyle.default.stroke
+          stroke: nodeStyle.default.stroke,
+          cursor: 'pointer'
         },
         className: 'collapse-icon'
       });
