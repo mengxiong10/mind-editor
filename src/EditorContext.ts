@@ -1,5 +1,5 @@
-import React from 'react';
+import { createContext } from 'react';
 
-const EditorContext = React.createContext<any>({} as any);
+const EditorContext = createContext<any>({} as any);
 
 export default EditorContext;
