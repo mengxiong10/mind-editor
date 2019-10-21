@@ -24,9 +24,14 @@ export const getContextMenuItems = (editor: any): OverlayMenuItem[] => {
     },
     { type: 'Divider', key: 'divider' },
     {
-      name: '新增条件',
+      name: '新增子条件',
       key: 'add-node',
       handler: editor.addNode.bind(editor)
+    },
+    {
+      name: '新增条件',
+      key: 'add-sibling',
+      handler: editor.addSibling.bind(editor)
     },
     {
       name: '删除节点',

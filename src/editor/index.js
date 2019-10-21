@@ -67,7 +67,8 @@ class Editor extends G6.TreeGraph {
           {
             type: 'ed-shortcut',
             shortcuts: [
-              { keyCode: [45, 9], handler: 'addNode' }, // insert tab
+              { keyCode: 13, handler: 'addSibling' }, // enter
+              { keyCode: [45, 9], handler: 'addNode' }, // tab insert tab
               { keyCode: 46, handler: 'deleteNode' }, // delete
               // {
               //   keyCode: 35,
@@ -157,6 +158,24 @@ class Editor extends G6.TreeGraph {
     parentData.children.push(data);
     this.changeData();
     return true;
+  }
+
+  addSibling(shape = 'expand-node') {
+    if (this.currentId) {
+      const currentData = this.findDataById(this.currentId);
+      const parent = currentData.parent;
+      if (!parent) {
+        this.addNode(shape);
+        return;
+      }
+      const data = getNodeModule(shape).create({ parent });
+      const siblings = this.findDataById(parent).children;
+      const index = siblings.findIndex(v => v.id === this.currentId);
+      siblings.splice(index + 1, 0, data);
+      this.changeData();
+      this.setCurrent(data.id);
+      this.editNode();
+    }
   }
 
   addNode(shape = 'expand-node') {
