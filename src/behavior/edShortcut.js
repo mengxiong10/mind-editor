@@ -11,6 +11,18 @@ export default {
     };
   },
   onKeydown(evt) {
+    const target = evt.target;
+    const { tagName } = target;
+    // ignore: isContentEditable === 'true', <input> and <textarea> when readOnly state is false, <select>
+    if (
+      target.isContentEditable ||
+      ((tagName === 'INPUT' ||
+        tagName === 'TEXTAREA' ||
+        tagName === 'SELECT') &&
+        !target.readOnly)
+    ) {
+      return;
+    }
     const code = evt.keyCode;
     const graph = this.graph;
     const item = this.shortcuts.find(v => {
