@@ -9,7 +9,7 @@ export default {
   },
   onDrag() {
     const el = this.graph.get('canvas').get('el');
-    el.style.cursor = 'grabbing';
+    el.style.cursor = '-webkit-grabbing';
   },
   onDragend() {
     const el = this.graph.get('canvas').get('el');
