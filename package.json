@@ -7,7 +7,8 @@
   "typings": "lib/index.d.ts",
   "scripts": {
     "dev": "parcel index.html --open",
-    "build": "rollup -c",
+    "build": "rollup -c && npm run fix:type",
+    "fix:type": "cp src/editor/index.d.ts lib/editor.d.ts",
     "release": "bash build/release.sh"
   },
   "files": [
