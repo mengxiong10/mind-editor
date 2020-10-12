@@ -37,7 +37,7 @@ class Editor extends G6.TreeGraph {
             return 5;
           },
           getHGap: function getHGap() {
-            return 40;
+            return 20;
           }
         });
       },
