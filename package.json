@@ -7,7 +7,8 @@
   "typings": "lib/index.d.ts",
   "scripts": {
     "dev": "parcel index.html --open",
-    "build": "rollup -c"
+    "build": "rollup -c",
+    "release": "bash build/release.sh"
   },
   "files": [
     "src",
