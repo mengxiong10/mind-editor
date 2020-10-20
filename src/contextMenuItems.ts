@@ -26,31 +26,36 @@ export const getContextMenuItems = (editor: any): OverlayMenuItem[] => {
     {
       name: '新增子条件',
       key: 'add-node',
-      handler: editor.addNode.bind(editor)
+      handler: editor.addNode.bind(editor),
+      shortcut: 'Tab'
     },
     {
       name: '新增条件',
       key: 'add-sibling',
-      handler: editor.addSibling.bind(editor)
+      handler: editor.addSibling.bind(editor),
+      shortcut: 'Enter'
     },
     {
       name: '删除节点',
       key: 'delete-node',
       disabled: !editor.couldDelete(),
-      handler: editor.deleteNode.bind(editor)
+      handler: editor.deleteNode.bind(editor),
+      shortcut: 'Delete'
     },
     { type: 'Divider', key: 'divider1' },
     {
       name: '复制',
       key: 'copy-node',
       disabled: !editor.couldClone(),
-      handler: editor.cloneNode.bind(editor)
+      handler: editor.cloneNode.bind(editor),
+      shortcut: 'Ctrl+C'
     },
     {
       name: '粘贴',
       key: 'paste-node',
       disabled: !editor.couldPaste(),
-      handler: editor.pasteNode.bind(editor)
+      handler: editor.pasteNode.bind(editor),
+      shortcut: 'Ctrl+V'
     }
   ];
 };

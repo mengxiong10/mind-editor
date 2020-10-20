@@ -10,6 +10,7 @@ export interface OverlayMenuItem {
   type?: 'Item' | 'Divider';
   handler?: (editor?: any) => void;
   disabled?: boolean;
+  shortcut?: string;
 }
 
 export interface OverlayMenuProps {
@@ -68,14 +69,16 @@ function OverlayMenu(props: OverlayMenuProps) {
         prefixCls="ant-dropdown-menu"
         onClick={handleClick}
         selectable={false}
+        style={{ minWidth: 160 }}
       >
         {items.map(item => {
           if (item.type === 'Divider') {
             return <Menu.Divider key={item.key} />;
           }
           return (
-            <Menu.Item key={item.key} disabled={!!item.disabled}>
-              {item.name}
+            <Menu.Item style={{ display: 'flex', justifyContent: 'space-between'}} key={item.key} disabled={!!item.disabled}>
+              <span>{item.name}</span>
+              {item.shortcut !== undefined && <span>{item.shortcut}</span>}
             </Menu.Item>
           );
         })}
