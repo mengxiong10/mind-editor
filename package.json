@@ -61,8 +61,8 @@
     "typescript": "^3.5.3"
   },
   "dependencies": {
-    "@antv/g6": "^3.0.4",
-    "@antv/hierarchy": "^0.4.0",
+    "@antv/g6": "~3.0.4",
+    "@antv/hierarchy": "~0.4.0",
     "antd": "^3.21.2",
     "utility-types": "^3.7.0"
   }
